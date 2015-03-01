@@ -1,0 +1,22 @@
+{
+    "name": "freelancertools/platform",    
+    "description": "",
+    "keywords": [],
+    "homepage": "http://gregsomers.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Greg Somers",
+            "email": "http://gregsomers.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "~2.6"
+    },
+    "autoload": {
+        "psr-0": {
+            "FreelancerTools": "src/"
+        }
+    }    
+}

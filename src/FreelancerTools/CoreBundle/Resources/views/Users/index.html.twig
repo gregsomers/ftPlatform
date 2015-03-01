@@ -1,0 +1,19 @@
+{% extends "FreelancerToolsCoreBundle::layout.html.twig" %}
+{% block body %}
+    <h1>
+        Users
+    </h1>
+    {% trans_default_domain 'FOSUserBundle' %}
+    <form class="form-horizontal" action="{{ path('fos_user_change_password') }}" {{ form_enctype(form) }} method="POST">
+        {{ form_start(form, { 'style': 'horizontal' }) }}
+        {{ form_widget(form) }}
+        <div class="form-actions">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10"> 
+                    <input class="btn btn-primary" type="submit" value="{{ 'change_password.submit'|trans }}" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock body %}

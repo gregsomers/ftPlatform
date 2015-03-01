@@ -1,0 +1,135 @@
+{% extends "FreelancerToolsCoreBundle::layout.guest.html.twig" %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <p>&nbsp;</p>
+            <div class="box">
+                <div class="title">
+                    <div class="clearfix">
+                        <div class="pull-right">
+                            <p>
+                                <a href="#" data-toggle="modal" data-target="#paymentTermsModal" ><img src="https://www.paypalobjects.com/webstatic/en_CA/mktg/logo-image/AM_mc_vs_dc_ae.jpg" border="0" alt="PayPal Acceptance Mark"></a>
+                            </p>
+                        </div>                    
+
+                        <div class="pull-left">
+                            <p>
+                                <a class="btn btn-default" target="_blank" href="{{path('invoice_pdf_guest', {token : invoice.token})}}"><span class="glyphicon glyphicon-print"></span> Download PDF</a>
+                                {% if invoice.showTimelog %}
+                                    <a class="btn btn-default" target="_blank" href="{{path('report_guest_show_invoice', {token : invoice.token})}}"><span class="glyphicon glyphicon-time"></span> View Time Log</a>
+                                {% endif%}
+                            </p>  
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td style="border: none">
+                                    <h1 style="font-size: 1.2em; padding-bottom: 2px; padding-top: 0px; margin: 0px">{{invoice.user.company}}</h1>
+                                    {{invoice.user.address|nl2br}}                                     
+                                </td>
+                                <td style="text-align: right; vertical-align: top;border: none">
+                                    <h1 style="font-size: 2.5em; padding-bottom: 5px; margin: 0px">Invoice</h1>
+                                    # {{invoice.invoiceNumber}}
+                                </td>                   
+                            </tr> 
+                            <tr>
+                                <td>
+                                    <br/>
+                                    <h3 style="font-size: 1em; margin: 0px">Bill To:</h3>
+                                    {{invoice.customer.name}}<br/>
+                                    {{invoice.customer.address|nl2br}} 
+                                </td>
+                                <td style="text-align: right; ">
+                                    <br/>                                    
+                                    Invoice Date: {{invoice.invoiceDate|date('d-M-Y')}}<br/>
+                                    Due Date: {{invoice.invoiceDueDate|date('d-M-Y')}}<br/>
+                                    Amount Due: ${{invoice.balance|number_format(2, '.', ',')}}
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="padding-bottom: 5px;">Product</th>
+                                <th style="padding-bottom: 5px">Description</th>
+                                <th style="text-align: right;padding-bottom: 5px">Qty</th>
+                                <th style="text-align: right;padding-bottom: 5px">Price</th>
+                                <th style="text-align: right;padding-bottom: 5px">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in invoice.items %}
+                                <tr>
+                                    <td style="padding-bottom: 5px">{{item.product}}</td>
+                                    <td style="padding-bottom: 5px">{{item.description}}</td>
+                                    <td style="text-align: right;padding-bottom: 5px">{{item.quantity}}</td>
+                                    <td style="text-align: right;padding-bottom: 5px">${{item.price|number_format(2, '.', ',')}}</td>
+                                    <td style="text-align: right;padding-bottom: 5px">${{(item.price * item.quantity)|number_format(2, '.', ',')}}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="3" style="border-top:none"></td>
+                                <td style="text-align: right;">Subtotal</td>
+                                <td style="text-align: right;">${{invoice.total|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="border-top:none"></td>
+                                <td style="text-align: right;">Taxes</td>
+                                <td style="text-align: right;">${{0|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="border-top:none"></td>
+                                <td style="text-align: right;">Grand Total</td>
+                                <td style="text-align: right;">${{invoice.total|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="border-top:none"></td>
+                                <td style="text-align: right;">Paid</td>
+                                <td style="text-align: right;">${{invoice.paid|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="border-top:none"></td>
+                                <td style="text-align: right;">Balance Due</td>
+                                <td style="text-align: right;font-weight: bold">${{invoice.balance|number_format(2, '.', ',')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/><br/><br/>
+                    {% if invoice.terms %}
+                        <h2 style="margin: 0px">Terms &amp; Conditions</h2>
+                        <p>
+                            {{invoice.terms|nl2br}}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paymentTermsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Payment Terms</h4>
+                </div>
+                <div class="modal-body">
+                    By paying with credit card you accept a processing charge of 1.5%.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a class="btn btn-primary" href="{{path('ePayment', {token: invoice.token})}}">Continue</a>                        
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

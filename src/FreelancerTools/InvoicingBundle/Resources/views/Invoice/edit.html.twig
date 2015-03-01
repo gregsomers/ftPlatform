@@ -1,0 +1,219 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box last">
+        <div class="title">
+            <div class="invoice-header clearfix">
+                <div class="pull-left">
+                    Invoice #{{invoice.invoiceNumber}}
+                </div>
+                <div class="pull-right">
+                    <div class="button-group"> 
+                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                     
+                        {% if invoice.id %}
+                            <a class="btn btn-default" href="{{path('invoice_email', {id : invoice.id})}}"><span class="glyphicon glyphicon-envelope"></span></a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Actions
+                                    <span class="caret"></span>
+                                </button>                        
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li><a href="{{path('invoice_payment', {id : invoice.id})}}"><span class="glyphicon glyphicon glyphicon-usd"></span> Add Payment</a></li>
+                                    <li><a target="_blank" href="{{path('invoice_pdf', {id : invoice.id})}}"><span class="glyphicon glyphicon-print"></span> Download PDF</a></li>
+                                    <li><a href="{{path('report_show_invoice', {id : invoice.id})}}"><span class="glyphicon glyphicon-time"></span> View Time Log</a></li>                                
+                                    <li><a href="{{path('invoice_email', {id : invoice.id})}}"><span class="glyphicon glyphicon-envelope"></span> Send Invoice Email</a></li>
+                                    <li><a class="deleteButton" href="{{path('invoice_delete', {id : invoice.id})}}"><span class="glyphicon glyphicon-trash"></span> Delete Invoice</a></li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <form class="form-horizontal" action="{% if invoice.id %}{{path('invoice_update', {"id":invoice.id})}}{% else %}{{path('invoice_create')}}{% endif %}" method="POST"> 
+                
+                <div class="row">
+                    <div class="col-sm-4">
+                        {{ form_row(form.customer, { 'style': 'horizontal' }) }}
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form_row(form.invoiceNumber, { 'style': 'horizontal' }) }}   
+                        {{ form_row(form.invoiceDate, { 'style': 'horizontal' }) }}     
+                        {{ form_row(form.invoiceDueDate, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.status, { 'style': 'horizontal' }) }}  
+                        {{ form_row(form.currency, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.showTimelog, { 'style': 'horizontal', 'align_with_widget': true }) }}
+                    </div>
+                </div>        
+
+                <table class="table tt-invoice-item-table" data-prototype="<tr>
+                       <td>{{ form_widget(form.items.vars.prototype.product, { 'style': 'inline' })|e }}</td>
+                       <td>{{ form_widget(form.items.vars.prototype.description, { 'style': 'inline' })|e }}</td>
+                       <td>{{ form_widget(form.items.vars.prototype.quantity, { 'style': 'inline' })|e }}</td>
+                       <td>{{ form_widget(form.items.vars.prototype.price, { 'style': 'inline' })|e }}</td>
+                       </tr>">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                            <th>Tax Rate</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>                                
+                        {% for item in form.items %}
+                            <tr>
+                                <td>{{ form_row(item.product, { 'style': 'inline' }) }}</td>
+                                <td>{{ form_row(item.description, { 'style': 'inline' }) }}</td>
+                                <td>{{ form_row(item.quantity, { 'style': 'inline' }) }}</td>
+                                <td>{{ form_row(item.price, { 'style': 'inline' }) }}</td>
+                                <td>${{item.vars.value.getTotal|number_format(2, '.', ',')}}</td>
+                                <td>None</td>
+                                <td>${{item.vars.value.getTotal|number_format(2, '.', ',')}}</td>
+                                <td><a class="btn btn-default btn-sm" href="{{path('invoice_delete_item', {'id':item.vars.value.id})}}" title="Delete"><span class="glyphicon glyphicon-trash"></span></a></td>
+                            </tr>                    
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="well">
+                    <a id="tt-add-invoice-item" href="#"><span class="glyphicon glyphicon-plus"></span> Add an Item</a>
+                </div>
+
+                <div class="clearfix">
+                    <div class="col-sm-4 pull-right" style="padding-right: 0px">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Subtotal</th>
+                                <td>${{invoice.total|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <th>Taxes</th>
+                                <td>${{0|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <th>Grand Total</th>
+                                <td>${{invoice.total|number_format(2, '.', ',')}}</td>
+                            </tr>
+                            <tr>
+                                <th>Paid</th>
+                                <td>${{invoice.paid|number_format(2, '.', ',')}}</td>
+                            </tr>  
+                            <tr>
+                                <th>Balance Due</th>
+                                <td>${{invoice.balance|number_format(2, '.', ',')}}</td>
+                            </tr>  
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" >
+                    {{ form_row(form.terms) }} 
+                </div>
+
+                Guest URL: <a href="{{ app.request.getSchemeAndHttpHost()}}{{path('invoice_guest', {'token':invoice.token})}}">{{ app.request.getSchemeAndHttpHost()}}{{path('invoice_guest', {'token':invoice.token})}}</a>
+
+                {{ form_widget(form._token) }}
+
+            </form>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+
+        var $collectionHolder;
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add_tag_link">Add a tag</a>');
+        var $newLinkLi = $('<li></li>').append($addTagLink);
+        $(function () {
+            /*
+             $('#ft_invoicingbundle_invoicetype_customer').change(function () {
+             var data = {};
+             data[$(this).attr('name')] = $(this).val();
+             // Submit data via AJAX to the form's action path.
+             $.ajax({
+             url: $form.attr('action'),
+             type: $form.attr('method'),
+             data: data,
+             success: function (html) {
+             // Replace current field ...
+             $('#ft_reportbundle_reporttype_projects').replaceWith(
+             // ... with the returned one from the AJAX response.
+             $(html).find('#ft_reportbundle_reporttype_projects')
+             );
+             $('#ft_reportbundle_reporttype_projects input').prop('checked', true);
+             }
+             });
+             });*/
+
+
+
+            $('#ft_invoicingbundle_invoicetype_invoiceDate').datetimepicker({pickTime: false, });
+            $('#ft_invoicingbundle_invoicetype_invoiceDueDate').datetimepicker({pickTime: false, });
+
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('table.tt-invoice-item-table');
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.attr('data-index', $collectionHolder.find(':input').length / 4);
+
+            $('#tt-add-invoice-item').on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addTagForm($collectionHolder);
+            });
+
+
+            function addTagForm($collectionHolder) {
+
+                // Get the data-prototype explained earlier
+                var prototype = $collectionHolder.data('prototype');
+
+                // get the new index
+                var index = parseInt($collectionHolder.attr('data-index'));
+
+                // Replace '__name__' in the prototype's HTML to
+                // instead be a number based on how many items we have
+                var newForm = prototype.replace(/__name__/g, index);
+
+                //console.log(newForm);
+
+                // increase the index with one for the next item
+                $collectionHolder.attr('data-index', index + 1);
+
+                // Display the form in the page in an li, before the "Add a tag" link li
+                $('table.tt-add-invoice-item tbody').append(newForm);
+                $('.tt-add-invoice-item').remove();
+
+                //$collectionHolder.remove();
+                $collectionHolder.children("tbody").append(newForm);
+
+            }
+
+            $('.deleteButton').on('click', function (e) {
+                e.preventDefault();
+                var item = $(this);
+                var form = $(this).closest('form');
+                $('#deleteModal').modal('show');
+                $('.confirmDelete').on("click", function () {
+                    window.location.href = item.attr('href');
+                });
+            });
+
+        });
+    </script>
+{% endblock %}

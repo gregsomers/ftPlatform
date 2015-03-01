@@ -1,0 +1,39 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            Clients
+        </div>
+        <div class="content">
+            <div class="pull-right">
+                <a class="btn btn-default" href="{{path('customer_add')}}" title="New Customer"><span class="glyphicon glyphicon-plus"></span> New</a>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th></th>
+                        <th>Actions</th>            
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                        <tr>
+                            <td>{{customer.name}}</td>
+                            <td></td>
+                            <td>
+                                <form action="{{path('customer_delete', {"id":customer.id})}}">
+                                    <div class="btn-group">
+                                        <a class="btn btn-default btn-sm" href="{{path('customer_edit', {'id':customer.id})}}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <button type="reset" class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

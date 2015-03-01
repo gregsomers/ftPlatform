@@ -1,0 +1,51 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            Edit Timeslice
+        </div>
+        <div class="content">
+            {{ form_errors(form) }} 
+            <form class="form-horizontal" action="{{path('timeslice_update', {"id":slice.id})}}" method="POST">
+                {{ form_row(form.activity, { 'style': 'horizontal' }) }}
+                {{ form_row(form.startedAt, { 'style': 'horizontal' }) }}   
+                {{ form_row(form.stoppedAt, { 'style': 'horizontal' }) }}    
+                {{ form_row(form.duration, { 'style': 'horizontal', 'help_text': "This will be automatically generated. If you wish to specify only a duration (in seconds), the start and end times must be empty" }) }}      
+
+                {{ form_row(form.notes, { 'style': 'horizontal' }) }}         
+
+
+                {{ form_row(form.invoiced, { 'style': 'horizontal', 'align_with_widget': true }) }}    
+                {{ form_row(form.invoicedAt, { 'style': 'horizontal' }) }}
+                {{ form_row(form.invoice, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.invoiceItem, { 'style': 'horizontal' }) }}  
+
+                {{ form_widget(form._token) }}
+
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-10"> 
+                            <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            $('#ft_timetrackerbundle_timeslicetype_startedAt').datetimepicker({useSeconds: true});
+            $('#ft_timetrackerbundle_timeslicetype_stoppedAt').datetimepicker({useSeconds: true});
+            $('#ft_timetrackerbundle_timeslicetype_invoicedAt').datetimepicker({useSeconds: true});
+
+            $("#ft_timetrackerbundle_timeslicetype_startedAt").on("dp.change", function (e) {
+                $('#ft_timetrackerbundle_timeslicetype_stoppedAt').data("DateTimePicker").setMinDate(e.date);
+            });
+            $("#ft_timetrackerbundle_timeslicetype_stoppedAt").on("dp.change", function (e) {
+                $('#ft_timetrackerbundle_timeslicetype_startedAt').data("DateTimePicker").setMaxDate(e.date);
+            });
+        });
+    </script>
+{% endblock %}

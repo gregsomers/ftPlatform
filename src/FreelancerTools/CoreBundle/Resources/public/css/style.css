@@ -1,0 +1,194 @@
+body{
+    /*background-color: #2c3e50;;*/
+    background-color: #F3F3F4;
+}
+
+html, body {height: 100%}
+
+/*Full length sidebar based on http://jsfiddle.net/hashem/34Fc5/25/ from http://stackoverflow.com/questions/26026587/bootstrap-100-height-right-sidebar*/
+.wrap {
+    min-height: 100%;
+    position: relative;
+}
+
+.page-wrapper {
+    background-color: #F3F3F4;
+    /*min-height: 1000px; */
+}
+
+.navbar-default {
+    background-color: #FFF;
+}
+
+.form-control {    
+    border-radius: 0;
+    box-shadow: none;    
+}
+
+.navbar-static-side {
+    /*padding-top: 15px;
+    z-index: 101;
+    position: absolute;
+    width: 220px;     
+    background-color: #2c3e50; 
+    */    
+    padding-top: 25px;
+    width: 220px;     
+    background-color: #2c3e50;     
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.box {
+    margin-bottom: 25px;
+    margin-top: 0;
+    padding: 0;
+}
+
+.box.last {
+    margin-bottom: 0px;   
+}
+
+.box .title {
+    background-color: #ffffff;
+    border-color: rgb(24, 188, 156);
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 4px 0px 0;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 14px 15px 7px;
+
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.2em;
+}
+
+.box .content {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0px;
+}
+
+
+
+.navbar-static-side a {
+    color: #FFF;
+}
+
+.navbar-static-side sidebar .nav li.current, sidebar .nav li.current_ancestor {
+    text-decoration: none;   
+    border-left: 3px solid rgb(24, 188, 156);
+    color: rgb(24, 188, 156);
+}
+
+.navbar-static-side .nav > li > a:hover, .nav > li > a:focus {
+    background-color: #293846;
+}
+
+
+#login-page {    
+    margin: 10% 0 0;
+}
+.form-signin {
+    margin: 0 auto;
+    max-width: 410px;
+    padding: 0;
+    background: #fff;
+    border: 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+    -moz-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+}
+
+.form-signin .title-box {
+    overflow: hidden;
+    padding: 10px 18px;
+    color: #fff;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+    background-color: #404852;
+    background-image: -moz-linear-gradient(top,#47505a,#353d45);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#47505a),to(#353d45));
+    background-image: -webkit-linear-gradient(top,#47505a,#353d45);
+    background-image: -o-linear-gradient(top,#47505a,#353d45);
+    background-image: linear-gradient(to bottom,#47505a,#353d45);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff47505a', endColorstr='#ff353d45', GradientType=0);
+}
+.form-signin .input-group-addon {   
+    font: bold 14px Helvetica, Arial, sans-serif;
+    color: #5b636d;
+    background-color: #d9dce0;
+    background-image: -moz-linear-gradient(top,#dde0e3,#d2d7db);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#dde0e3),to(#d2d7db));
+    background-image: -webkit-linear-gradient(top,#dde0e3,#d2d7db);
+    background-image: -o-linear-gradient(top,#dde0e3,#d2d7db);
+    background-image: linear-gradient(to bottom,#dde0e3,#d2d7db);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdde0e3', endColorstr='#ffd2d7db', GradientType=0);    
+}
+
+.form-signin fieldset {
+    border: solid #d4d4d4;
+    border-width: 0 1px 1px 1px;
+    padding: 30px 38px;
+    background: #fff;
+    -webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
+}
+
+.form-signin .title-box .title {
+    font: 20px/28px Helvetica, Arial, sans-serif;
+    margin: 0;
+    text-shadow: 1px 1px 1px #000000;
+}
+
+
+.tt-invoice-item-table .form-group {
+    margin-left: 0px; 
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+
+.invoice-header h2 {
+    margin-top: 0px;    
+}
+
+
+.clickable {
+    cursor: pointer;
+}
+
+.ft-sorting {
+    background: none;
+    background-image: url('https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/images/sort_both.png');
+    background-repeat: no-repeat;
+    background-position: center right;    
+}
+
+.ft-sorting_asc {
+    background: none;
+    background-image: url('../images/sort_asc.png');
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-color: #38A8D7;
+}
+
+.ft-sorting_desc {
+    background: none;
+    background-image: url('../images/sort_desc.png');
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-color: #38A8D7;
+}

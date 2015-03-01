@@ -1,0 +1,24 @@
+{
+    "name": "freelancertools/payment-bundle",
+    "type": "symfony-bundle",
+    "description": "",
+    "keywords": [],
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Greg Somers",
+            "email": ""
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "~2.6"
+    },
+    "autoload": {
+        "psr-0": {
+            "FreelancerTools\\PaymentBundle": ""
+        }
+    },
+    "target-dir": "FreelancerTools/PaymentBundle"
+}

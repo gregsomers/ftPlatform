@@ -1,0 +1,69 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="row">
+        
+    </div>
+
+    <fieldset>
+        <legend>By Activities</legend> 
+
+        <form class="form-horizontal" action="{{path('report_generate')}}" method="POST">        
+            {{ form_row(form.customer, { 'style': 'horizontal' }) }}
+            {{ form_row(form.projects, { 'style': 'horizontal' }) }}
+            {{ form_row(form.start, { 'style': 'horizontal' }) }}
+            {{ form_row(form.end, { 'style': 'horizontal' }) }}
+            {{ form_row(form.invoiced, { 'style': 'horizontal', 'align_with_widget': true }) }}
+
+            {{ form_widget(form._token) }}
+            {#
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-sm-offset-2 col-sm-10"> 
+                                    <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                                </div>
+                            </div>
+                        </div>#}
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </form>
+    </fieldset>
+
+
+{% endblock %}  
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function() {
+            $('#ft_reportbundle_reporttype_start').datetimepicker({useSeconds: true});
+            $('#ft_reportbundle_reporttype_end').datetimepicker({useSeconds: true});
+
+            $("#ft_reportbundle_reporttype_start").on("dp.change", function(e) {
+                $('#ft_reportbundle_reporttype_end').data("DateTimePicker").setMinDate(e.date);
+            });
+            $("#ft_timetrackerbundle_timeslicetype_end").on("dp.change", function(e) {
+                $('#ft_reportbundle_reporttype_start').data("DateTimePicker").setMaxDate(e.date);
+            });
+            
+            
+            $('#ft_reportbundle_reporttype_customer').change(function() {
+                var $form = $(this).closest('form');
+                // Simulate form data, but only include the selected sport value.
+                var data = {};
+                data[$(this).attr('name')] = $(this).val();
+                // Submit data via AJAX to the form's action path.
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: $form.attr('method'),
+                    data: data,
+                    success: function(html) {
+                        // Replace current field ...
+                        $('#ft_reportbundle_reporttype_projects').replaceWith(
+                                // ... with the returned one from the AJAX response.
+                                $(html).find('#ft_reportbundle_reporttype_projects')
+                                );
+                        $('#ft_reportbundle_reporttype_projects input').prop('checked', true);
+                    }
+                });
+            });
+            
+        });
+    </script>
+{% endblock %}

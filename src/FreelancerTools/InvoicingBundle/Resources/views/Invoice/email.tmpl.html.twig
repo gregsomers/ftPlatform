@@ -1,0 +1,24 @@
+{{invoice.customer.name}},
+
+<p>This is a notice that an invoice has been generated on {{invoice.updatedAt|date('d-M-Y')}}.</p>
+
+<p>
+    Invoice: {{invoice.invoiceNumber}}<br/>
+    Amount Due: ${{invoice.balance|number_format(2, '.', ',')}}<br/>
+    Due Date: {{invoice.invoiceDueDate|date('d-M-Y')}}<br/>
+    Status: {{invoice.statusString}}
+</p>
+<p>You may view this invoice online at <a href="{{ app.request.getSchemeAndHttpHost()}}/guest/invoices/{{invoice.token}}">{{ app.request.getSchemeAndHttpHost()}}/guest/invoices/{{invoice.token}}</a></p>
+
+<p>You may view this invoice online at <a href="{{ app.request.getSchemeAndHttpHost()}}{{path('invoice_guest', {'token':invoice.token})}}">{{ app.request.getSchemeAndHttpHost()}}{{path('invoice_guest', {'token':invoice.token})}}</a></p>
+
+
+
+<p>
+    Regards,<br/>
+    Greg Somers Invoicing Robot<br/>
+
+    T: 613-986-4734<br/>
+    E: greg@gregsomers.com<br/>
+    W: http://www.gregsomers.com 
+</p>       

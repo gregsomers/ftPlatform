@@ -1,0 +1,87 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            Activity
+        </div>
+        <div class="content">
+            <h3>{{activity.description|default('')}}</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Customer</strong>: <a href="{{path('customer_edit', {id:activity.customer.id})}}">{{activity.customer|default('')}}</a></p>
+                    <p><strong>Project</strong>: <a href="{{path('project_show', {id:activity.project.id})}}">{{activity.project|default('')}}</a></p>
+                    <p><strong>Rate</strong>: {{activity.rate}}</p>
+                    <p><strong>Current Time</strong>: {{activity.balanceTime}}</p>            
+                    <p><strong>Current Cost</strong>: ${{(activity.balanceSeconds/3600 * activity.rate)|number_format(2, '.', ',')}}</p>
+                </div>
+                <div class="col-md-3">            
+                    <p><strong>Activity Total Time</strong>: {{activity.totalTime}}</p>
+                    <p><strong>Activity Total Cost</strong>: ${{(activity.totalSeconds/3600 * activity.rate)|number_format(2, '.', ',')}}</p>            
+                </div>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Duration</th> 
+                        <th>Start</th> 
+                        <th>Stop</th> 
+                        <th>Notes</th>
+                        <th>
+                            <a class="btn btn-default btn-sm" href="{{path('timeslice_add', {"id":activity.id})}}" title="Add new slice"><span class="glyphicon glyphicon-plus"></span></a>
+                            <a class="btn btn-default btn-sm" href="{{path('activity_edit', {"id":activity.id})}}" title="Edit Activity"><span class="glyphicon glyphicon-pencil"></span></a>
+                        </th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slice in activity.timeslices if slice.invoiced == 0 %}
+                        <tr>
+                            <td>{{slice.currentDurationString}}</td>
+                            <td>{{slice.startedAt|date('D M d Y H:i:s')}}</td>
+                            <td>{% if slice.stoppedAt is not null %}{{slice.stoppedAt|date('D M d Y H:i:s')}} {% endif %} {#{{dump(slice.stoppedAt)}}#}</td>
+                            <td>{{slice.notes}}</td>
+                            <td>
+                                <form action="{{path('timeslice_delete', {"id":slice.id})}}">
+                                    <div class="btn-group">                            
+                                        <a class="btn btn-default btn-sm" href="{{path('timeslice_edit', {"id":slice.id})}}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <button type="reset" class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>    
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+
+            var activeDurations = new Array();
+
+            $('.tt-timer-box').each(function () {
+                var item = $(this);
+                var id = item.attr('data-id');
+                //console.log ('id ' + id);
+                var durr = parseInt(item.attr('data-duration'));
+                //there is a duration, continue counting
+                if (durr >= 0) {
+                    activeDurations[id] = moment.duration(durr, 'seconds');
+                    setInterval(function () {
+                        activeDurations[id].add(1, 'seconds');
+                        //this is sad https://github.com/moment/moment/issues/463
+                        var str = moment.utc(activeDurations[id].asMilliseconds()).format("HH:mm:ss");
+                        item.children('.tt-current-time').text(str);
+                    }, 1000);
+                }
+            });
+
+        });
+    </script>
+{% endblock %}  
+

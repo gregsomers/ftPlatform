@@ -1,0 +1,99 @@
+knp_paginator:
+    page_range: 10                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: false                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: FreelancerToolsCoreBundle:Pagination:twitter_bootstrap_pagination.html.twig     # sliding pagination controls template
+        #sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
+ 
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: "FreelancerTools\CoreBundle\Entity\User"    
+    profile:
+      form:
+        type: ft_user_profile
+    
+assetic:        
+    filters:
+        cssrewrite: ~
+        lessphp:
+            #file: "%kernel.root_dir%/../vendor/leafo/lessphp/lessc.inc.php"
+            file: %kernel.root_dir%/../vendor/oyejorge/less.php/lessc.inc.php
+            apply_to: "\.less$"        
+    assets:
+        bootstrap_css:
+            inputs:
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/less/bootstrap.less
+                #- %kernel.root_dir%/Resources/less/bootstrap.less
+                - %kernel.root_dir%/../vendor/braincrafted/bootstrap-bundle/Braincrafted/Bundle/BootstrapBundle/Resources/less/form.less
+            filters:
+                - lessphp
+                - cssrewrite
+            output: css/bootstrap/bootstrap.css
+        bootstrap_js:
+            inputs:
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/transition.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/alert.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/button.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/carousel.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/collapse.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/dropdown.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/modal.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/tooltip.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/popover.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/scrollspy.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/tab.js
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/js/affix.js
+                - %kernel.root_dir%/../vendor/braincrafted/bootstrap-bundle/Braincrafted/Bundle/BootstrapBundle/Resources/js/bc-bootstrap-collection.js
+            output: js/bootstrap.js
+        jquery:
+            inputs:
+                - %kernel.root_dir%/../vendor/jquery/jquery/jquery-1.11.0.js
+            output: js/jquery.js
+        datetime_js:
+            inputs:
+                - %kernel.root_dir%/../vendor/eonasdan/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js
+            output: js/datetimepicker.js
+        datetime_css:
+            inputs:
+                - %kernel.root_dir%/../vendor/eonasdan/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css
+            output: css/datetimepicker.css
+        moment:
+            inputs:
+                - %kernel.root_dir%/../vendor/moment/moment/min/moment.min.js
+            output: js/app/moment.js
+        ft_core_scripts:
+            inputs:
+                - %kernel.root_dir%/../src/FreelancerTools/CoreBundle/Resources/public/js/ft_core_scripts.js
+            output: js/ft_core_scripts.js
+        core_css:
+            inputs:
+                - '@FreelancerToolsCoreBundle/Resources/public/css/*'
+            output: css/app/core-styles.css
+        
+braincrafted_bootstrap:
+    less_filter: lessphp
+    #less_filter: less
+    #output_dir: bootstrap
+    #assets_dir: %kernel.root_dir%/../vendor/twbs/bootstrap
+    #jquery_path: %kernel.root_dir%/../vendor/jquery/jquery/jquery-1.11.0.js
+    auto_configure:
+        assetic: false
+        twig: true
+        knp_menu: false
+        knp_paginator: false
+    customize:
+        #variables_file: %kernel.root_dir%/Resources/less/variables.less
+        #bootstrap_output: %kernel.root_dir%/Resources/less/bootstrap.less
+        bootstrap_template: BraincraftedBootstrapBundle:Bootstrap:bootstrap.less.twig
+        
+twig:    
+    form:
+        resources:
+            #- FreelancerToolsCoreBundle:Form:bootstrap.html.twig
+        

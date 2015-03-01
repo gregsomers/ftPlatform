@@ -1,0 +1,55 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            New Project
+        </div>
+        <div class="content">
+            <form class="form-horizontal" action="{{path('project_create')}}" method="POST">        
+                {{ form_row(form.name, { 'style': 'horizontal' }) }}  
+
+                {{ form_row(form.alias, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.customer, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.startedAt, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.stoppedAt, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.deadline, { 'style': 'horizontal' }) }}  
+
+                {{ form_row(form.description, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.budgetPrice, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.fixedPrice, { 'style': 'horizontal' }) }}  
+                {{ form_row(form.budgetTime, { 'style': 'horizontal' }) }}
+
+                {{ form_row(form.rate, { 'style': 'horizontal' }) }} 
+                {{ form_row(form.active, { 'style': 'horizontal', 'align_with_widget': true }) }}    
+
+                {{ form_widget(form._token) }}
+
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-10"> 
+                            <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            $('#ft_timetrackerbundle_projecttype_startedAt').datetimepicker({useSeconds: true, });
+            $('#ft_timetrackerbundle_projecttype_stoppedAt').datetimepicker({useSeconds: true, });
+            $('#ft_timetrackerbundle_projecttype_deadline').datetimepicker({useSeconds: true, });
+            /*
+             $("#ft_timetrackerbundle_timeslicetype_startedAt").on("dp.change",function (e) {
+             $('#ft_timetrackerbundle_timeslicetype_stoppedAt').data("DateTimePicker").setMinDate(e.date);
+             });
+             $("#ft_timetrackerbundle_timeslicetype_stoppedAt").on("dp.change",function (e) {
+             $('#ft_timetrackerbundle_timeslicetype_startedAt').data("DateTimePicker").setMaxDate(e.date);
+             });*/
+        });
+    </script>
+{% endblock %}
+
+

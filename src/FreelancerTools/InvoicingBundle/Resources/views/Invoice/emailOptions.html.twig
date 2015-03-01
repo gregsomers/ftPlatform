@@ -1,0 +1,31 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            Email Invoice
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <form class="form-horizontal" action="{{path('invoice_email_send', {'id':invoice.id})}}" method="POST"> 
+                        {{ form_row(form.name, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.email, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.to, { 'style': 'horizontal' }) }}           
+                        {{ form_row(form.cc, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.bcc, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.subject, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.body, { 'style': 'horizontal' }) }}
+
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-sm-offset-2 col-sm-10"> 
+                                    <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-envelope"> Send</button>                        
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

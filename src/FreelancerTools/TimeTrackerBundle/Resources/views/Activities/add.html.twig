@@ -1,0 +1,54 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            New Activity
+        </div>
+        <div class="content">
+            <form class="form-horizontal" action="{{path('activity_create')}}" method="POST">        
+                {{ form_row(form.description, { 'style': 'horizontal' }) }}   
+                {{ form_row(form.customer, { 'style': 'horizontal' }) }} 
+                {{ form_row(form.project, { 'style': 'horizontal' }) }}    
+                {{ form_row(form.service, { 'style': 'horizontal' }) }}
+                {{ form_row(form.rate, { 'style': 'horizontal' }) }}          
+
+                {{ form_widget(form._token) }}
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-10"> 
+                            <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            $('#ft_timetrackerbundle_activitytype_customer').change(function () {
+                var $form = $(this).closest('form');
+                // Simulate form data, but only include the selected sport value.
+                var data = {};
+                data[$(this).attr('name')] = $(this).val();
+                // Submit data via AJAX to the form's action path.
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: $form.attr('method'),
+                    data: data,
+                    success: function (html) {
+                        // Replace current position field ...
+                        $('#ft_timetrackerbundle_activitytype_project').replaceWith(
+                                // ... with the returned one from the AJAX response.
+                                $(html).find('#ft_timetrackerbundle_activitytype_project')
+                                );
+                        // Position field now displays the appropriate positions.
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

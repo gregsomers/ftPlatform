@@ -1,0 +1,39 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1>Currency list</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>                
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entity in entities %}
+                <tr>
+                    <td><a href="{{ path('currency_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>                
+                    <td>
+                        <ul>
+                            <li>
+                                <a href="{{ path('currency_show', { 'id': entity.id }) }}">show</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('currency_edit', { 'id': entity.id }) }}">edit</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('currency_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends app.request.get('_route') == 'report_show' 
+    ? 'FreelancerToolsCoreBundle::layout.html.twig' 
+    : 'FreelancerToolsCoreBundle::layout.guest.html.twig' %}
+
+{% block body %}
+
+    <div class="container">       
+        <div class="row">  
+            <p>&nbsp;</p>
+
+            <div class="box">
+                <div class="title">
+                    {{invoice.customer}} Timelog 
+                </div>
+                <div class="content">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>Activity</td>
+                                <td>Project</td>
+                                <td>Customer</td>
+                                <td>Activity Duration</td>  
+                                <td>Rate</td>
+                                <td>Cost</td>
+                            </tr>
+                        </thead>
+                        <tbody>      
+                            {% set totalCost = 0 %}
+                            {% for activity in activities %}
+                                {% set totalCost = totalCost + activity.totalSeconds/3600 * activity.rate %}
+                                <tr>
+                                    <td><strong>{{activity.description}}</strong></td>
+                                    <td>{{activity.project}}</td>
+                                    <td>{{activity.customer}}</td>
+                                    <td>{{activity.getTotalTime}}</td>
+                                    <td>{{activity.rate}}</td>
+                                    <td>${{(activity.totalSeconds/3600 * activity.rate)|number_format(2, '.', ',')}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: middle">Entries</td>
+                                    <td colspan="5">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <td>Duration</td>
+                                                    <td>Date</td>                                    
+                                                    <td>Invoiced</td>
+                                                    <td>Invoiced On</td>                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>                                
+                                                {% for slice in activity.timeslices %}                                    
+                                                    <tr>
+                                                        <td>{{slice.currentDurationString}}</td>
+                                                        <td style="white-space: nowrap">{{slice.startedAt|date('Y-m-d')}}</td>                                        
+                                                        <td>{% if slice.invoiced == 0 %} <span class="label label-default">Not Invoiced</span> {% else %} <span class="label label-success">Invoiced</span> {% endif %}</td>
+                                                        <td>{%if slice.invoicedAt %}{{slice.invoicedAt|date('Y-m-d')}}{% endif %}</td>                                        
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="4"></td>
+                                <td><strong>Total</strong></td>
+                                <td>${{(totalCost)|number_format(2, '.', ',')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}  
+

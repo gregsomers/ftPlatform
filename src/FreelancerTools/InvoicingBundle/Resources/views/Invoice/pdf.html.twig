@@ -1,0 +1,96 @@
+<html>
+    <head>
+        {% block stylesheets %}            
+            {% stylesheets
+                'css/bootstrap/bootstrap.css'                
+                filter='cssrewrite,lessphp' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %} 
+
+    </head>        
+    <body>
+        <table class="table">
+            <tr >
+                <td>
+                    <h1 style="font-size: 1.2em; padding-bottom: 2px; padding-top: 0px; margin: 0px">{{user.company}}</h1>
+                    {{user.address|nl2br}}     
+                </td>
+                <td style="text-align: right; vertical-align: top">
+                    <h1 style="font-size: 2.5em; padding-bottom: 5px; margin: 0px">Invoice</h1>
+                    # {{invoice.invoiceNumber}}
+                </td>                   
+            </tr> 
+            <tr>
+                <td>
+                    <br/>
+                    <h3 style="font-size: 1em">Bill To:</h3>
+                    {{invoice.customer.name}}<br/>
+                    {{invoice.customer.address|nl2br}} 
+                </td>
+                <td style="text-align: right; ">
+                    <br/>
+                    Invoice Date: {{invoice.invoiceDate|date('d-M-Y')}}<br/>
+                    Due Date: {{invoice.invoiceDueDate|date('d-M-Y')}}<br/>
+                    Amount Due: ${{invoice.balance|number_format(2, '.', ',')}}                    
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="padding: 0 5px 5px 0;">Product</th>
+                    <th style="padding: 0 5px 5px 0;">Description</th>
+                    <th style="text-align: right;padding: 0 5px 5px 0">Qty</th>
+                    <th style="text-align: right;padding: 0 5px 5px 0">Price</th>
+                    <th style="text-align: right;padding: 0 5px 5px 0">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in invoice.items %}
+                    <tr>
+                        <td style="vertical-align: top; padding: 0 15px 5px 0">{{item.product}}</td>
+                        <td style="vertical-align: top; padding: 0 10px 5px 0">{{item.description}}</td>
+                        <td style="vertical-align: top;text-align: right;padding: 0 10px 5px 0">{{item.quantity}}</td>
+                        <td style="vertical-align: top;text-align: right;padding: 0 10px 5px 0">${{item.price|number_format(2, '.', ',')}}</td>
+                        <td style="vertical-align: top;text-align: right;padding: 0 10px 5px 0">${{(item.price * item.quantity)|number_format(2, '.', ',')}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br/><br/><br/>
+        <div style="clear: both">
+            <div style="float: right; width: 200px;">
+                <table class="table" style="width: 200px; float: right">
+                    <tr>
+                        <th>Subtotal</th>
+                        <td style="text-align: right">${{invoice.total|number_format(2, '.', ',')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Taxes</th>
+                        <td style="text-align: right">${{0|number_format(2, '.', ',')}}</td>
+                    </tr>
+                    <tr>
+                        <th>Grand Total</th>
+                        <td style="text-align: right">${{invoice.total|number_format(2, '.', ',')}}</td>
+                    </tr>   
+                    <tr>
+                        <th>Paid</th>
+                        <td style="text-align: right">${{invoice.paid|number_format(2, '.', ',')}}</td>
+                    </tr> 
+                    <tr>
+                        <th>Balance Due</th>
+                        <td style="font-weight: bold;text-align: right">${{invoice.balance|number_format(2, '.', ',')}}</td>
+                    </tr>  
+                </table>
+            </div>
+        </div>
+        {% if invoice.terms %}
+            <h2 style="margin: 0px">Terms &amp; Conditions</h2>
+            <p>
+                {{invoice.terms|nl2br}}
+            </p>
+        {% endif %}
+    </body>
+</html>

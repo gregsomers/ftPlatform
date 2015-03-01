@@ -1,0 +1,35 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">
+            Invoice Payment
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <form class="form-horizontal" action="{{path('invoice_payment_submit', {'id':invoice.id})}}" method="POST"> 
+                        {{ form_row(form.amount, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.date, { 'style': 'horizontal' }) }}            
+                        {{ form_row(form.method, { 'style': 'horizontal' }) }}
+                        {{ form_row(form.notes, { 'style': 'horizontal' }) }}
+
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-sm-offset-2 col-sm-10"> 
+                                    <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            $('#ft_invoicingbundle_paymenttype_date').datetimepicker({pickTime: false});
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,219 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+
+    <div class="box">
+        <div class="title clearfix">
+            {{project.name}}
+            <div class="pull-right">
+                <div class="button-group">
+                    <button data-toggle="modal" data-target="#AddToInvoiceModal" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"></span> Add Unbilled to Invoice
+                    </button>
+                    <a class="btn btn-default" href="{{path('project_edit', {'id': project.id})}}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                    <a class="btn btn-default" href="{{path('activity_add')}}"><span class="glyphicon glyphicon-plus"></span> Add Activity</a>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+
+            <p><strong>Customer</strong>: {{project.customer|default('')}}<br/>
+                <strong>Rate</strong>: {{project.rate}}</p>
+
+            <div class="row">
+                <div class="col-md-2">
+                    <h4 style="color: blue;margin-bottom: 0px">{{project.totalTime}}</h4>
+                    Total Hours
+                </div>
+                <div class="col-md-2">
+                    <h4 style="color: orange;margin-bottom: 0px">{{project.unbilledTime}}</h4>
+                    Unbilled Hours
+                </div>
+                <div class="col-md-2">
+                    <h4 style="color: green;margin-bottom: 0px">{{project.billedTime}}</h4>
+                    Billed Hours
+                </div>
+            </div>
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#timesheet" role="tab" data-toggle="tab">Time Slices</a></li>
+                <li><a href="#activities" role="tab" data-toggle="tab">Activities</a></li>
+                <li><a href="#archived" role="tab" data-toggle="tab">Archived</a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="tab-pane active" id="timesheet">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Activity</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for slice in slicesPager %}
+                                <tr>
+                                    <td>{{slice.startedAt|date('d-M-Y')}}</td>
+                                    <td><a href="{{path('activity_show', {'id':slice.activity.id})}}">{{slice.activity.description}}</a></td>
+                                    <td>{% if slice.stoppedAt is null and slice.startedAt is not null %} current {% endif %} {{slice.currentDurationString}}</td>
+                                    <td>{% if slice.invoiced == 0 %} <span class="label label-default">Not Invoiced</span> {% else %} <span class="label label-success">Invoiced</span> {% endif %}</td>
+                                    <td>
+                                        <form action="{{path('timeslice_delete', {"id":slice.id})}}">
+                                            <div class="btn-group">                            
+                                                <a class="btn btn-default btn-sm" href="{{path('timeslice_edit', {"id":slice.id})}}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <button class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                            </div>    
+                                        </form>  
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {{ knp_pagination_render(slicesPager) }}
+
+                </div>
+                <div class="tab-pane" id="activities">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Service</th>
+                                <th>Total Hours</th>
+                                <th>Billed Hours</th>
+                                <th>Unbilled Hours</th>
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                            {% for activity in project.activities if not activity.archived %}
+                                {% if activity.timeslices|length > 0 and activity.timeslices|first.stoppedAt is null and activity.timeslices|first.startedAt is not null %} 
+                                    {% set duration = activity.timeslices|first.currentDuration %}
+                                    {% set slideid = activity.timeslices|first.id %}
+                                {% else %}      
+                                    {% set duration = null %} 
+                                    {% set slideid = '' %}  
+                                {% endif %}
+                                <tr>                                
+                                    <td>{{activity.description}}</td>
+                                    <td>{{activity.service}}</td>
+                                    <td>{{activity.totalTime}}</td>
+                                    <td>{{activity.invoicedTime}}</td>
+                                    <td>{{activity.balanceTime}}</td> 
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-default btn-sm" title="Show all time slices for this activity" href="{{path('activity_show', {'id':activity.id})}}"><span class="glyphicon glyphicon-time"></span></a>
+                                            <a class="btn btn-default btn-sm" href="{{path('activity_edit', {'id':activity.id})}}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                            <a class="btn btn-default btn-sm" href="{{path('activity_delete', {'id':activity.id})}}" title="Delete"><span class="glyphicon glyphicon-trash"></span></a>
+                                        </div> 
+                                    </td>
+                                    <td>
+                                        <div class="tt-timer-box" data-duration="{{duration}}" data-id='{{activity.id}}'>
+                                            <!--
+                                            <span data-duration="0" class="tt-current-time">
+                                                00:00:00
+                                            </span>     
+                                            -->
+                                            <div class="tt-timer-controls">
+                                                <a {% if not slideid %} href="{{path('activity_create_time_slice', {'id': activity.id})}}" {% else %} href="#" {% endif %}  class="btn btn-success tt-timer-start" title="Start" {% if duration %} disabled="disabled" {% endif %} ><span class="glyphicon glyphicon-play"></span></a>
+                                                <a {% if slideid %} href="{{path('activity_stop_time_slice', {'id': slideid})}}" {% else %} href="#" {% endif %}  class="btn btn-danger tt-timer-stop" title="Stop" {% if duration is null %} disabled="disabled" {% endif %}><span class="glyphicon glyphicon-stop"></span></a>
+                                            </div>                                    
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>               
+                    </table>
+                </div>
+                <div class="tab-pane" id="archived">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Service</th>
+                                <th>Total Hours</th>
+                                <th>Billed Hours</th>
+                                <th>Unbilled Hours</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                            {% for activity in project.activities if activity.archived %}
+                                {% if activity.timeslices|length > 0 and activity.timeslices|first.stoppedAt is null and activity.timeslices|first.startedAt is not null %} 
+                                    {% set duration = activity.timeslices|first.currentDuration %}
+                                    {% set slideid = activity.timeslices|first.id %}
+                                {% else %}      
+                                    {% set duration = null %} 
+                                    {% set slideid = '' %}  
+                                {% endif %}
+                                <tr>                                
+                                    <td>{{activity.description}}</td>
+                                    <td>{{activity.service}}</td>
+                                    <td>{{activity.totalTime}}</td>
+                                    <td>{{activity.invoicedTime}}</td>
+                                    <td>{{activity.balanceTime}}</td> 
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-default btn-sm" title="Show all time slices for this activity" href="{{path('activity_show', {'id':activity.id})}}"><span class="glyphicon glyphicon-time"></span></a>
+                                            <a class="btn btn-default btn-sm" href="{{path('activity_edit', {'id':activity.id})}}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                            <a class="btn btn-default btn-sm" href="{{path('activity_delete', {'id':activity.id})}}" title="Delete"><span class="glyphicon glyphicon-trash"></span></a>
+                                        </div> 
+                                    </td>                            
+                                </tr>
+                            {% endfor %}
+                        </tbody>               
+                    </table>
+                </div>
+            </div>
+
+            <form class="form-horizontal" action="{{path('project_addtoinvoice', {id:project.id})}}" method="POST"> 
+                <!-- Modal -->
+                <div class="modal fade" id="AddToInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                            </div>
+                            <div class="modal-body">
+                                {{ form_row(addToInvoiceForm.invoice, { 'style': 'horizontal' }) }}   
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add to Invoice</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            var activeDurations = new Array();
+
+            $('.tt-timer-box').each(function () {
+                var item = $(this);
+                var id = item.attr('data-id');
+                //console.log ('id ' + id);
+                var durr = parseInt(item.attr('data-duration'));
+                //there is a duration, continue counting
+                if (durr >= 0) {
+                    activeDurations[id] = moment.duration(durr, 'seconds');
+                    setInterval(function () {
+                        activeDurations[id].add(1, 'seconds');
+                        //this is sad https://github.com/moment/moment/issues/463
+                        var str = moment.utc(activeDurations[id].asMilliseconds()).format("HH:mm:ss");
+                        item.children('.tt-current-time').text(str);
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+{% endblock %}  
+

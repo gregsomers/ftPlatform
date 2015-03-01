@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>FreelancerTools</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {% block stylesheets %}            
+            {% stylesheets
+                'css/bootstrap/bootstrap.css'
+                'css/bootstrap/bootstrap_form_2.css'                
+                'css/app/core-styles.css'                
+                filter='cssrewrite,lessphp' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+
+    </head>
+    <body>        
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" role="main">
+
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        <div class="alert alert-warning alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <strong>Warning!</strong> {{flashMessage}}
+                        </div>                        
+                    {% endfor %} 
+
+                    {% for flashMessage in app.session.flashbag.get('success') %}
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <strong>Well done!</strong> {{flashMessage}}
+                        </div>                           
+                    {% endfor %} 
+
+                    {% for flashMessage in app.session.flashbag.get('info') %}
+                        <div class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <strong>Heads up!</strong> {{flashMessage}}
+                        </div> 
+                    {% endfor %}
+
+                </div>  
+            </div>  
+        </div>
+
+        {% block body %}            
+        {% endblock %}
+
+        {% block fos_user_content %}
+        {% endblock fos_user_content %}
+
+
+
+
+
+
+        {% javascripts 
+                            'js/jquery.js'
+                            'js/bootstrap.js'
+                             filter=''                            
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}        
+
+    {% block javascripts %}{% endblock %}  
+
+</body>
+</html>
+

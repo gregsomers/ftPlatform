@@ -1,0 +1,68 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    {##f9f9f9
+
+    http://wrapbootstrap.com/preview/WB0R5L90S
+
+    http://wrapbootstrap.com/preview/WB0R5L90S
+
+    http://ironsummitmedia.github.io/startbootstrap-freelancer/
+
+    http://ironsummitmedia.github.io/startbootstrap-sb-admin/
+
+    http://ironsummitmedia.github.io/startbootstrap-sb-admin-2/pages/index.html
+    
+    !!!!!!!!!http://webapplayers.com/inspinia_admin-v1.9.2/form_advanced.html
+    
+    #}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="title">
+                    Fiscal Invoice Summary
+                </div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h5>Receivables</h5>            
+                            ${{accountsReceivable|number_format(2, '.', ',')}}
+                        </div>
+                        <div class="col-sm-3">
+                            <h5>Paid</h5>
+                            ${{paidInvoicesAmount|number_format(2, '.', ',')}}
+                        </div>
+                        <div class="col-sm-3">
+
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="box">
+                <div class="title">
+                    Timesheet Summary
+                </div>
+                <div class="content">
+                    <h3>Total Unbilled Time</h3>       
+                    {{unbilledTime}}
+                    <h3>Value of Unbilled Time</h3>
+                    ${{unbilledCost|number_format(2, '.', ',')}}
+                    <br/>
+                    <br/>
+                    <br/>
+                    today
+
+
+                    this week
+                </div>                
+            </div>
+        </div>
+    {% endblock %}
+    {% block javascripts %}
+        <script type="text/javascript">
+
+        </script>
+    {% endblock %}  

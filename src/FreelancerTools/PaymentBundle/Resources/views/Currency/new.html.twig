@@ -1,0 +1,15 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1>Currency creation</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('currency') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

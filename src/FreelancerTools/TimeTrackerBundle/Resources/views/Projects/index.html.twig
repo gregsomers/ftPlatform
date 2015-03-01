@@ -1,0 +1,63 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="box">
+        <div class="title">            
+            <div class="clearfix">
+                Projects
+                <div class="pull-right">
+                    <p><a class="btn btn-default" href="{{path('project_add')}}" title="New Project"><span class="glyphicon glyphicon-plus"></span> New Project</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="{% if pagination.isSorted('c.name') %} ft-sorting_{{pagination.getDirection('o.lastName')}} {%else%} ft-sorting {% endif %}">
+                            {{ knp_pagination_sortable(pagination, 'Customer', 'c.name') }}
+                        </th>
+                        <th>{{ knp_pagination_sortable(pagination, 'Project', 'p.name') }}</th>
+                        <th>Rate</th>
+                        <th>&nbsp;</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in pagination %}
+                        <tr href="{{path('project_show', {'id': project.id})}}">
+                            <td class="clickable">{{project.customer.name}}</td>
+                            <td class="clickable"><a href="{{path('project_show', {'id': project.id})}}">{{project.name}}</a></td>
+                            <td class="clickable">{{project.rate}}</td>
+                            <td>
+                                <form action="{{path('project_delete', {"id":project.id})}}">
+                                    <div class="btn-group">  
+                                        <a class="btn btn-default btn-sm" href="{{path('project_edit', {'id': project.id})}}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <button type="reset" class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </form>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>  
+            <div style="text-align: center">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+
+        $(function () {
+            $('.clickable').on('click', function (e) {
+                e.preventDefault();
+                window.location.href = $(this).parent().attr('href');
+            });
+        });
+    </script>
+{% endblock %}
+
+

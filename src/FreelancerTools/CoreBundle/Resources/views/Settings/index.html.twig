@@ -1,0 +1,62 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#home" role="tab" data-toggle="tab">Email</a></li>
+        <li><a href="#Invoices" role="tab" data-toggle="tab">Invoices</a></li>
+        <li><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
+        <li><a href="#settings" role="tab" data-toggle="tab">Settings</a></li>
+    </ul>
+    <form class="form-horizontal" action="{{path('settings_update')}}" method="POST"> 
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                <br/>
+                {{ form_row(form.email_host.value, { 'style': 'horizontal', 'label': 'SMTP Host' }) }}
+                {{ form_row(form.email_port.value, { 'style': 'horizontal', 'label': 'SMTP Port' }) }}
+                {{ form_row(form.email_security.value, { 'style': 'horizontal', 'label': 'SMTP Security' }) }}
+                {{ form_row(form.email_user.value, { 'style': 'horizontal', 'label': 'SMTP User' }) }}
+                {{ form_row(form.email_password_blank, { 'style': 'horizontal', 'label': 'SMTP Password', 'help_text': 'Leave blank to keep current password' }) }}
+
+
+            </div>
+                <div class="tab-pane" id="Invoices">
+                    <br/>
+                    {{ form_row(form.invoice_next_id.value, { 'style': 'horizontal', 'label': 'Next ID' }) }}
+                    {{ form_row(form.invoice_prefix.value, { 'style': 'horizontal', 'label': 'Next ID' }) }}
+                    {{ form_row(form.invoice_default_terms.value, { 'style': 'horizontal', 'label': 'Default Terms' }) }}                    
+                    {{ form_row(form.invoice_payment_reminder.value, { 'style': 'horizontal', 'label': 'Send Payment Reminder?' }) }}                    
+                    {{ form_row(form.invoice_payment_reminder_delay.value, { 'style': 'horizontal', 'label': 'Send Payment Reminder X Days Before Due' }) }}
+                    
+                    {{ form_row(form.invoice_qty_round.value, { 'style': 'horizontal', 'label': 'Add to Invoice Qty Round' }) }}
+                    
+                    
+                    
+                </div>
+            <div class="tab-pane" id="messages">3</div>
+            <div class="tab-pane" id="settings">4</div>
+        </div>
+
+        <div class="form-actions">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10"> 
+                    <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#myTab a').click(function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+
+        });
+    </script>
+{% endblock %}

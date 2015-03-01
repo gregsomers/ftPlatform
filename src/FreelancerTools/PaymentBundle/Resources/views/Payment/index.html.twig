@@ -1,0 +1,45 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+
+    <div class="box">
+        <div class="title">
+            Payments
+        </div>
+        <div class="content">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Payment Date</th>
+                        <th>Invoice Date</th>
+                        <th>Invoice</th>
+                        <th>Client</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{payment.date|date('d-M-Y')}}</td>
+                            <td>{{payment.invoice.invoiceDate|date('d-M-Y')}}</td>                    
+                            <td><a href="{{path('invoice_edit', {'id':payment.invoice.id})}}">{{payment.invoice.invoiceNumber}}</a></td>
+                            <td>{% if payment.invoice.customer %}<a href="{{path('customer_edit', {'id':payment.invoice.customer.id})}}">{{payment.invoice.customer}}</a>{% endif %}</td>
+
+                            <td>${{payment.amount|number_format(2, '.', ',')}}</td>
+                            <td>{{payment.method}}</td>   
+                            <td>
+                                <form action="{{path('payment_delete', {"id":payment.id})}}">
+                                    <div class="btn-group">  
+                                        <a class="btn btn-default btn-sm" href="{{path('payment_edit', {'id': payment.id})}}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <button type="reset" class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </form>                        
+                            </td>
+                        </tr>        
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

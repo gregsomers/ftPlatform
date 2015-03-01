@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>FreelancerTools</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+        {% block stylesheets %}            
+            {% stylesheets
+                'css/bootstrap/bootstrap.css'
+                'css/bootstrap/bootstrap_form_2.css'
+                'css/datetimepicker.css'
+                'css/app/core-styles.css'
+                'css/app/tt-styles.css'
+                filter='cssrewrite,lessphp' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+
+    </head>
+    <body>        
+
+        <div class="wrap">
+
+            <div class="navbar-static-side">
+                <sidebar>
+                    {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
+                </sidebar>
+            </div>
+
+            <div class="page-wrapper" style="margin: 0 0 0 220px;">
+
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="{{path('dashboard')}}">Freelancer Tools</a>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">                    
+                            {% if app.user %}
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="System">
+                                            <i class="glyphicon glyphicon-cog"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="{{path('fos_user_profile_edit')}}">User Account</a></li>
+                                            <li><a href="{{path('fos_user_change_password')}}">Change Password</a></li>
+                                            <li><a href="{{path('currency')}}">Manage Currencies</a></li>   
+                                            <li><a href="{{path('paymentmethod')}}">Manage Payment Methods</a></li>   
+                                            <li><a href="{{path('settings')}}">System Settings</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="{{path('fos_user_security_logout')}}" title="Logout">
+                                            <span class="glyphicon glyphicon-off"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                        </div><!-- /.navbar-collapse -->
+                    </div><!-- /.container-fluid -->
+                </nav>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        {% block sidebar %}   
+                            <!--<div class="col-md-1">
+                                
+                                <sidebar>
+                            {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
+                        </sidebar>
+                           
+                        </div> -->
+                        {% endblock %}   
+                        <div class="col-md-12" role="main">
+
+                            {% for flashMessage in app.session.flashbag.get('notice') %}
+                                <div class="alert alert-warning alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <strong>Warning!</strong> {{flashMessage}}
+                                </div>                        
+                            {% endfor %} 
+
+                            {% for flashMessage in app.session.flashbag.get('success') %}
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <strong>Well done!</strong> {{flashMessage}}
+                                </div>                           
+                            {% endfor %} 
+
+                            {% for flashMessage in app.session.flashbag.get('info') %}
+                                <div class="alert alert-info alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <strong>Heads up!</strong> {{flashMessage}}
+                                </div> 
+                            {% endfor %} 
+
+
+                            {% block body %}            
+                            {% endblock %}
+
+                            {% block fos_user_content %}
+                            {% endblock fos_user_content %}
+
+
+                        </div>        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary confirmDelete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% javascripts 
+                            'js/jquery.js'
+                            'js/bootstrap.js'                            
+                            'js/app/*'
+                            'js/datetimepicker.js'
+                            'js/ft_core_scripts.js'
+                             filter=''                            
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+    {% block javascripts %}{% endblock %}  
+
+</body>
+</html>
+

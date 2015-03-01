@@ -1,0 +1,101 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+    <div class="clearfix">
+        <h1>
+            Activities
+        </h1>
+        <div class="pull-right">
+            <p><a class="btn btn-default" href="{{path('activity_add')}}" title="New Activity"><span class="glyphicon glyphicon-plus"></span> New Activity</a></p>
+        </div>
+    </div>
+    {% for activity in activities %}
+        <div class="row tt-activity bs-callout bs-callout-info">
+            <div class="col-lg-2">
+                {% if activity.timeslices|length > 0 and activity.timeslices|first.stoppedAt is null and activity.timeslices|first.startedAt is not null %} 
+                    {% set duration = activity.timeslices|first.currentDuration %}
+                    {% set slideid = activity.timeslices|first.id %}
+                {% else %}      
+                    {% set duration = null %} 
+                    {% set slideid = '' %}  
+                {% endif %}
+                <div class="tt-timer-box" data-duration="{{duration}}" data-id='{{activity.id}}'>                    
+                    <span data-duration="0" class="tt-current-time">
+                        00:00:00
+                    </span>      
+                    <div class="tt-timer-controls">
+                        <a {% if not slideid %} href="{{path('activity_create_time_slice', {'id': activity.id})}}" {% else %} href="#" {% endif %}  class="btn btn-success tt-timer-start" title="Start" {% if duration %} disabled="disabled" {% endif %} ><span class="glyphicon glyphicon-play"></span></a>
+                        <a {% if slideid %} href="{{path('activity_stop_time_slice', {'id': slideid})}}" {% else %} href="#" {% endif %}  class="btn btn-danger tt-timer-stop" title="Stop" {% if duration is null %} disabled="disabled" {% endif %}><span class="glyphicon glyphicon-stop"></span></a>
+                    </div>
+                    {% if duration is not null %}                        
+                        <p>Started At {{activity.timeslices|first.startedAt|date('h:i:s A')|default('0')}}</p>
+                    {% endif %}
+                </div>                
+            </div>
+            <div class="col-lg-10">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h3>{{activity.description|default('')}}</h3>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-sm" title="Show all time slices for this activity" href="{{path('activity_show', {'id':activity.id})}}"><span class="glyphicon glyphicon-time"></span></a>
+                            <a class="btn btn-default btn-sm" href="{{path('activity_edit', {'id':activity.id})}}" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a class="btn btn-default btn-sm" href="{{path('activity_delete', {'id':activity.id})}}" title="Delete"><span class="glyphicon glyphicon-trash"></span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <p><strong>Customer</strong>: <a href="#">{{activity.customer|default('')}}</a></p>
+                <p><strong>Project</strong>: {{activity.project|default('')}}</p>
+                <p><strong>Total Time</strong>: {{activity.totalTime}}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function() {
+            var activeDurations = new Array();
+            $('.tt-timer-box').each(function() {
+                var item = $(this);
+                var id = item.attr('data-id');
+                //console.log ('id ' + id);
+                var durr = parseInt(item.attr('data-duration'));
+                //there is a duration, continue counting
+                if (durr >= 0) {
+                    activeDurations[id] = moment.duration(durr, 'seconds');
+                    setInterval(function() {
+                        activeDurations[id].add(1, 'seconds');
+                        //this is sad https://github.com/moment/moment/issues/463
+                        var str = moment.utc(activeDurations[id].asMilliseconds()).format("HH:mm:ss");
+                        item.children('.tt-current-time').text(str);
+                    }, 1000);
+                }
+            });
+            /*
+             $('.tt-timer-start').on('click', function(e) {
+             e.preventDefault();
+             var item = $(this);
+             var parent = item.parent().parent();
+             var duration = parent.attr('data-duration');
+             var activityId = parent.attr('data-id');
+             //alert(duration + " " + activityId);
+             //alert(activityId);  
+             $.post("timeslice/create", {activityId: activityId}, function(data) {
+             item.attr('disabled', 'disabled');
+             activeDurations[activityId] = moment.duration(0, 'seconds');
+             //console.log(activeDurations);
+             setInterval(function() {
+             activeDurations[activityId].add(1, 'seconds');
+             //this is sad https://github.com/moment/moment/issues/463
+             var str = moment.utc(activeDurations[activityId].asMilliseconds()).format("HH:mm:ss");
+             parent.children('.tt-current-time').text(str);
+             }, 1000);
+             });
+             });
+             */
+        });
+    </script>
+{% endblock %}  
+

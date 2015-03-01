@@ -1,0 +1,22 @@
+.tt-activity h3 {
+    margin-top: 0px;    
+}
+
+.tt-current-time {
+    font-size: 1.6em;
+    line-height: 1em;
+    color: #e41c24;
+    font-weight: 300;
+    display: inline-block;     
+    
+}
+
+.tt-timer-controls {
+    padding-top: 5px;
+}
+
+.tt-activity {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}

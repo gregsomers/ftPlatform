@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!--
+    <parameters>
+        <parameter key="freelancer_tools_core.example.class">FreelancerTools\CoreBundle\Example</parameter>
+    </parameters>
+
+    <services>
+        <service id="freelancer_tools_core.example" class="%freelancer_tools_core.example.class%">
+            <argument type="service" id="service_id" />
+            <argument>plain_value</argument>
+            <argument>%parameter_name%</argument>
+        </service>
+    </services>
+    -->
+    
+    <services>        
+        <service id="ft.storage" class="FreelancerTools\CoreBundle\Services\FreelancerStorage">
+            <argument type="service" id="doctrine.orm.entity_manager" />                                    
+        </service>
+        <service id="user.setter.listener" class="FreelancerTools\CoreBundle\EventListener\UserSetter">
+            <tag name="doctrine.event_listener" event="prePersist" />
+            <argument type="service" id="service_container" />
+            <!-- injecting just the security context causes a circular refernce -->            
+        </service>
+        
+        
+        <service id="ft.encryption" class="FreelancerTools\CoreBundle\Services\Encryption">
+            <argument>%secret%</argument>  
+            <!--
+            <argument type="service" id="logger"/>     
+            <argument type="service" id="session" />         
+            <tag name="monolog.logger" channel="communication" />
+            -->
+        </service>
+        
+        <service id="ft_user.form.type" class="FreelancerTools\CoreBundle\Form\UserType">
+            <tag name="form.type" alias="ft_user_profile" />
+            <argument>%fos_user.model.user.class%</argument>
+        </service>
+        
+    </services>
+    
+</container>

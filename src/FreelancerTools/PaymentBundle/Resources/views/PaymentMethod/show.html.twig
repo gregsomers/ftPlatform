@@ -1,0 +1,28 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+
+{% block body -%}
+    <h1>PaymentMethod</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ entity.name }}</td>
+            </tr>            
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('paymentmethod') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('paymentmethod_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
