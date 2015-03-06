@@ -126,53 +126,7 @@ class Customer extends Entity {
         }
 
         return $customer;
-    }
-
-    /**
-     * Add tag
-     *
-     * @param  Tag $tag
-     * @return Customer
-     */
-    public function addTag(Tag $tag) {
-        $this->tags[] = $tag;
-
-        return $this;
-    }
-
-    /**
-     * Remove tags
-     *
-     * @param Tag $tags
-     * @return Activity
-     */
-    public function removeTag(Tag $tag) {
-        $this->tags->removeElement($tag);
-
-        return $this;
-    }
-
-    /**
-     * Get tags
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTags() {
-        return $this->tags;
-    }
-
-    /**
-     * Set tags
-     *
-     * @param \Doctrine\Common\Collections\ArrayCollection $tags
-     * @return Customer
-     */
-    public function setTags(ArrayCollection $tags) {
-        $this->tags = $tags;
-
-        return $this;
-    }
-
+    } 
    
     /**
      * Set address
