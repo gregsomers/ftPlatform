@@ -45,7 +45,8 @@
                                                     <td>Duration</td>
                                                     <td>Date</td>                                    
                                                     <td>Invoiced</td>
-                                                    <td>Invoiced On</td>                                    
+                                                    <td>Invoiced On</td>   
+                                                    <td>Notes</td>     
                                                 </tr>
                                             </thead>
                                             <tbody>                                
@@ -54,7 +55,8 @@
                                                         <td>{{slice.currentDurationString}}</td>
                                                         <td style="white-space: nowrap">{{slice.startedAt|date('Y-m-d')}}</td>                                        
                                                         <td>{% if slice.invoiced == 0 %} <span class="label label-default">Not Invoiced</span> {% else %} <span class="label label-success">Invoiced</span> {% endif %}</td>
-                                                        <td>{%if slice.invoicedAt %}{{slice.invoicedAt|date('Y-m-d')}}{% endif %}</td>                                        
+                                                        <td>{%if slice.invoicedAt %}{{slice.invoicedAt|date('Y-m-d')}}{% endif %}</td>     
+                                                        <td>{{slice.notes}}</td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>

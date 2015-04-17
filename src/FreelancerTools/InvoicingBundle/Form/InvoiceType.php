@@ -45,8 +45,7 @@ class InvoiceType extends AbstractType {
                     )
                 ))
                 ->add('status', 'choice', array(
-                    'choices' => array(
-                        '0' => 'Draft',
+                    'choices' => array(                        
                         '1' => 'Open',
                         '2' => 'Paid',
                         '3' => 'Cancelled',

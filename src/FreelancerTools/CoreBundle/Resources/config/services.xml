@@ -22,6 +22,14 @@
         <service id="ft.storage" class="FreelancerTools\CoreBundle\Services\FreelancerStorage">
             <argument type="service" id="doctrine.orm.entity_manager" />                                    
         </service>
+        <service id="ft.email.notification" class="FreelancerTools\CoreBundle\Services\EmailNotification">            
+            <argument type="service" id="templating" />    
+            <argument type="service" id="ft.storage" />   
+            <argument type="service" id="security.context" />
+            <argument type="service" id="ft.encryption" />
+            <argument type="service" id="ft.email_token_transformer" /> 
+            <argument type="service" id="twig" />                             
+        </service>
         <service id="user.setter.listener" class="FreelancerTools\CoreBundle\EventListener\UserSetter">
             <tag name="doctrine.event_listener" event="prePersist" />
             <argument type="service" id="service_container" />
@@ -30,13 +38,10 @@
         
         
         <service id="ft.encryption" class="FreelancerTools\CoreBundle\Services\Encryption">
-            <argument>%secret%</argument>  
-            <!--
-            <argument type="service" id="logger"/>     
-            <argument type="service" id="session" />         
-            <tag name="monolog.logger" channel="communication" />
-            -->
+            <argument>%secret%</argument>              
         </service>
+        
+        <service id="ft.email_token_transformer" class="FreelancerTools\CoreBundle\Services\EmailTokenTransformer"></service>
         
         <service id="ft_user.form.type" class="FreelancerTools\CoreBundle\Form\UserType">
             <tag name="form.type" alias="ft_user_profile" />

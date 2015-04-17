@@ -1,6 +1,6 @@
 <?php
 
-namespace FreelancerTools\InvoicingBundle\Entity;
+namespace FreelancerTools\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FreelancerTools\CoreBundle\Entity\Entity;

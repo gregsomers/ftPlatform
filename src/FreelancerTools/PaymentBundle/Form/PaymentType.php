@@ -34,7 +34,9 @@ class PaymentType extends AbstractType {
                         'placeholder' => "mm/dd/yyyy"
                     )
                 ))
-                ->add('notes', null, array('required' => false))               
+                ->add('notes', null, array('required' => false))      
+                ->add('notes', null, array('required' => false))       
+                ->add('emailNotification', 'checkbox', array('required' => false, 'mapped' => false))
                 ;
                    
     }

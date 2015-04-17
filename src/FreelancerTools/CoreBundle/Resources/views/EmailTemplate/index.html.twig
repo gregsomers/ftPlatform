@@ -1,0 +1,28 @@
+{% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
+{% block body %}
+
+    <div class="box">
+        <div class="title">
+            Email Templates
+        </div>
+        <div class="content">
+
+            <form class="form-horizontal" action="{{path('email_templates_update')}}" method="POST"> 
+
+                {{ form_row(form.invoice_notification.body, { 'style': 'horizontal', 'label': 'Invoice Notification' }) }}
+                {{ form_row(form.invoice_reminder_notification.body, { 'style': 'horizontal', 'label': 'Invoice Reminder Notification' }) }}
+                {{ form_row(form.payment_notification.body, { 'style': 'horizontal', 'label': 'Payment Received Notification' }) }}
+                {{ form_row(form.payment_overdue_notification.body, { 'style': 'horizontal', 'label': 'Payment Overdue Notification' }) }}
+
+                <div class="form-actions">
+                    <div class="row">
+                        <div class="col-sm-offset-2 col-sm-10"> 
+                            <button class="btn btn-default btn-lg" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                        
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

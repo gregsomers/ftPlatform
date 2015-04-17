@@ -46,7 +46,7 @@ class Invoice extends Entity {
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $status;
+    protected $status = 1;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -86,13 +86,13 @@ class Invoice extends Entity {
     /**
      * @ORM\Column(type="boolean", options={"default" = 0})
      */
-    protected $isRecurring = false;
+    //protected $isRecurring = false;
     
    /**
      * 
      * @ORM\Column(type="datetime")
      */
-    protected $duration;
+    //protected $duration;
 
     /**
      * Entity constructor
@@ -102,6 +102,12 @@ class Invoice extends Entity {
         $this->payments = new ArrayCollection();
         $this->items = new ArrayCollection();
         $this->timeslices = new ArrayCollection();
+    }
+    
+    public function getDaysUntilDue() {
+        $now = new \DateTime("today midnight");      
+        
+        return ($this->getInvoiceDueDate()->getTimestamp() - $now->getTimestamp()) / 86400;
     }
     
     public function setShowTimelog($showTimelog) {
@@ -129,13 +135,14 @@ class Invoice extends Entity {
     public function getPaid() {
         $paid = 0;
         foreach ($this->payments as $payment) {
-            $paid += $payment->getAmount();
+            $paid += $payment->getAmount(); 
         }
         return $paid;
     }
 
-    public function getBalance() {               
-        return $this->getTotal() - $this->getPaid();
+    public function getBalance() {
+        //need to round to deal with floating point inaccuracy. should instead store as integer and divide by 100 
+        return round($this->getTotal() - $this->getPaid(), 2);
     }
 
     public function getStatusString() {

@@ -16,26 +16,26 @@ use \DateTime;
 use \mPDF;
 
 class InvoiceController extends Controller {
-    
+
     /**
      * @Route("/invoices/", name="invoices")
      * @Template()
      */
     public function indexAction() {
-        
+
         $invoices = $this->getInvoiceStorage()->getRepo()->getInvoices($this->getUser());
 
         return array(
             'invoices' => $invoices
         );
     }
-    
+
     /**
      * @Route("/invoices/recurring/", name="invoices_recurring")
      * @Template()
      */
     public function recurringAction() {
-        
+
         $invoices = $this->getInvoiceStorage()->getRepo()->getInvoices($this->getUser(), true);
 
         return array(
@@ -65,13 +65,13 @@ class InvoiceController extends Controller {
     public function deleteAction($id) {
 
         $invoice = $this->getInvoiceRepository()->findOneById($id);
-        
+
         foreach ($invoice->getTimeslices() as $slice) {
             $slice->setInvoicedAt(null);
             $slice->setInvoiced(false);
             $slice->setInvoiceItem(null);
-        }        
-        
+        }
+
         $this->getDoctrine()->getManager()->remove($invoice);
         $this->getDoctrine()->getManager()->flush();
 
@@ -83,10 +83,34 @@ class InvoiceController extends Controller {
      * @Template("FreelancerToolsInvoicingBundle:Invoice:emailOptions.html.twig")
      * //@Template("FreelancerToolsInvoicingBundle:Invoice:email.html.twig")
      */
-    public function emailAction($id) {
-
+    public function emailInvoiceAction($id) {
         $invoice = $this->getInvoiceRepository()->findOneById($id);
-        $invoice->setStatus(1);
+
+        $this->generatePDF($invoice, 'F');
+
+        $data = array(
+            'from' => array($this->getUser()->getEmail() => $this->getUser()->__toString()),
+            'to' => explode(';', $invoice->getCustomer()->getEmailAddress()),
+            'subject' => 'Invoice #' . $invoice->getInvoiceNumber()
+        );
+        $object = array('invoice' => $invoice, 'user' => $this->getUser());
+        $notification = $this->get('ft.email.notification');
+        $notification->send($data, $object, 'invoice_notification', '/tmp/Invoice-' . $invoice->getInvoiceNumber() . '.pdf');
+
+        $this->get('session')->getFlashBag()->add(
+                'success', "Invoice sent"
+        );
+
+        return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));
+    }
+
+    /**
+     * @Route("/invoices/email/custom/{id}", name="invoice_custom_email")
+     * @Template("FreelancerToolsInvoicingBundle:Invoice:emailOptions.html.twig")
+     * //@Template("FreelancerToolsInvoicingBundle:Invoice:email.html.twig")
+     */
+    public function emailAction($id) {
+        $invoice = $this->getInvoiceRepository()->findOneById($id);
 
         $form = $this->createForm(new EmailInvoiceType());
         $form->get('name')->setData($this->getUser()->__toString());
@@ -94,13 +118,14 @@ class InvoiceController extends Controller {
         $form->get('cc')->setData($this->getUser()->getEmail());
         $form->get('to')->setData($invoice->getCustomer()->getEmailAddress());
         $form->get('subject')->setData('Invoice #' . $invoice->getInvoiceNumber());
-        
-        $template = $this->getEmailTemplateRepository()->findOneByName('Invoice');
-        
+
+        $template = $this->getTemplateStorage()->findOneBy(array('name' => 'invoice_notification'))->getBody();
+        $this->get('ft.email_token_transformer')->transform($template);
+
         $twig = clone $this->get('twig');
         $twig->setLoader(new \Twig_Loader_String());
         $html = $twig->render(
-                $template->getBody(), array('invoice' => $invoice, 'user' => $this->getUser())
+                $template, array('invoice' => $invoice, 'user' => $this->getUser())
         );
 
         $form->get('body')->setData($html);
@@ -118,58 +143,28 @@ class InvoiceController extends Controller {
      */
     public function emailSendAction($id, Request $request) {
         $invoice = $this->getInvoiceRepository()->findOneById($id);
-        $invoice->setStatus('1');
+
         $options = $this->createForm(new EmailInvoiceType())->bind($request)->all();
 
         //save the pdf to a file
         $this->generatePDF($invoice, 'F');
 
-        $serverSettings = array();
-        foreach ($this->getSettingRepository()->findByNamespace('email') as $setting) {
-            $serverSettings[$setting->getName()] = $setting->getValue();
-        }
-        $password = $this->get('ft.encryption')->decrypt($serverSettings['password']);
+        $data = array(
+            'from' => array($options['email']->getData() => $options['name']->getData()),
+            'to' => explode(';', $options['to']->getData()),
+            'subject' => $options['subject']->getData(),
+            'cc' => $options['cc']->getData(),
+            'bcc' => $options['bcc']->getData()
+        );
+        $object = array('invoice' => $invoice, 'user' => $this->getUser());
+        $notification = $this->get('ft.email.notification');
+        $notification->send($data, $object, 'invoice_notification', '/tmp/Invoice-' . $invoice->getInvoiceNumber() . '.pdf');
 
-        $transport = \Swift_SmtpTransport::newInstance();
-        $transport->setUsername($serverSettings['user']);
-        $transport->setPassword($password);
-        $transport->setHost($serverSettings['host']);
-        $transport->setPort($serverSettings['port']);
-        $transport->setEncryption($serverSettings['security']);
+        $this->get('session')->getFlashBag()->add(
+                'success', "Invoice sent"
+        );
+        return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));
 
-        $message = \Swift_Message::newInstance()
-                ->setSubject('Invoice #' . $invoice->getInvoiceNumber())
-                ->setFrom(array($options['email']->getData() => $options['name']->getData()))
-                ->setTo($options['to']->getData())
-                ->setCharset('UTF-8')
-                ->setContentType('text/html')
-                ->setBody(
-                        $this->get('templating')->render(
-                                'FreelancerToolsInvoicingBundle:Invoice:email.html.twig', array('body' => $options['body']->getData())
-                        )                        
-                )
-                ->attach(\Swift_Attachment::fromPath('/tmp/Invoice-' . $invoice->getInvoiceNumber() . '.pdf'))
-        ;
-        
-        if ($options['cc']->getData()) {
-            $message->setCc($options['cc']->getData());
-        }
-        if ($options['bcc']->getData()) {
-            $message->setBcc($options['bcc']->getData());
-        }
-
-        $mailer = \Swift_Mailer::newInstance($transport);
-        $result = $mailer->send($message);
-
-        if ($result) {
-            $invoice->setStatus('1');
-            $this->getDoctrine()->getManager()->persist($invoice);
-            $this->getDoctrine()->getManager()->flush();
-            $this->get('session')->getFlashBag()->add(
-                    'success', "Invoice sent"
-            );
-            return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));
-        }
     }
 
     private function generatePDF($invoice, $mode = 'I') {
@@ -183,7 +178,7 @@ class InvoiceController extends Controller {
 
         $templateFile = "FreelancerToolsInvoicingBundle:Invoice:pdf.html.twig";
         $html = $this->get('templating')->render($templateFile, $parameters);
-        
+
         //echo $html;
 
         $mpdf->WriteHTML($html);
@@ -223,11 +218,8 @@ class InvoiceController extends Controller {
             'invoice' => $invoice
         );
 
-
         return $parameters;
     }
-
-    
 
     /**
      * @Route("/invoices/add", name="invoice_add")
@@ -241,10 +233,7 @@ class InvoiceController extends Controller {
         }
 
         $invoice = new Invoice();
-        //$item = new InvoiceItem();
-        //$invoice->addItem($item);
-
-
+        
         $invoice->setInvoiceNumber($settings['prefix'] . date("Y") . date("m") . $settings['next_id']);
         $invoice->setInvoiceDate(new DateTime("now"));
         $invoice->setInvoiceDueDate(new DateTime("now + 1 month"));
@@ -264,17 +253,19 @@ class InvoiceController extends Controller {
      */
     public function createAction(Request $request) {
 
+        $nextIdEntity = $this->getSettingsStorage()->findOneBy(array('namespace' => 'invoice', 'name' => 'next_id'));
+        $nextIdEntity->setValue($nextIdEntity->getValue() + 1);
+
         $invoice = new Invoice();
         $form = $this->createForm(new InvoiceType(), $invoice)->bind($request);
 
         if ($form->isValid()) {
             foreach ($invoice->getItems() as $item) {
                 $item->setInvoice($invoice);
-                //$item->setUser($this->getUser());
             }
-            //$invoice->setUser($this->getUser());
-            $this->getDoctrine()->getManager()->persist($invoice);
-            $this->getDoctrine()->getManager()->flush();
+            $this->getSettingsStorage()->update($nextIdEntity);
+            $this->getInvoiceStorage()->update($invoice);
+
             $this->get('session')->getFlashBag()->add(
                     'success', "Invoice Saved."
             );
@@ -302,28 +293,28 @@ class InvoiceController extends Controller {
             'form' => $form->createView(),
         );
     }
-    
+
     /**
      * @Route("/invoices/deleteItem/{id}", name="invoice_delete_item")
      * 
      */
     public function deleteInvoiceItemAction($id) {
-        
+
         $repo = $this->getDoctrine()->getRepository('FreelancerToolsInvoicingBundle:InvoiceItem');
-        
-        $ii = $repo->findOneById($id);        
+
+        $ii = $repo->findOneById($id);
         $invoice = $ii->getInvoice();
-        
+
         foreach ($ii->getTimeslices() as $slice) {
             $slice->setInvoicedAt(null);
             $slice->setInvoiced(false);
             $slice->setInvoice(null);
-        }  
-        
+        }
+
         $this->getDoctrine()->getManager()->remove($ii);
-        $this->getDoctrine()->getManager()->flush();       
-        
-        return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));        
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));
     }
 
     /**
@@ -367,9 +358,17 @@ class InvoiceController extends Controller {
     public function getSettingRepository() {
         return $this->getDoctrine()->getRepository('FreelancerToolsCoreBundle:Setting');
     }
-    
+
+    protected function getTemplateStorage() {
+        return $this->get('ft.storage')->getStorage('FreelancerTools\CoreBundle\Entity\EmailTemplate');
+    }
+
     protected function getInvoiceStorage() {
         return $this->get('ft.storage')->getStorage('FreelancerTools\InvoicingBundle\Entity\Invoice');
-    } 
+    }
+
+    protected function getSettingsStorage() {
+        return $this->get('ft.storage')->getStorage('FreelancerTools\CoreBundle\Entity\Setting');
+    }
 
 }

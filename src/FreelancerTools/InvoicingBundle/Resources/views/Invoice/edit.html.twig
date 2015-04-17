@@ -1,5 +1,6 @@
 {% extends 'FreelancerToolsCoreBundle::layout.html.twig' %}
-{% block body %}
+{% block body %}    
+    
     <form class="form-horizontal" action="{% if invoice.id %}{{path('invoice_update', {"id":invoice.id})}}{% else %}{{path('invoice_create')}}{% endif %}" method="POST"> 
         <div class="box last">
             <div class="title">
@@ -11,7 +12,7 @@
                         <div class="button-group"> 
                             <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Save</button>                     
                             {% if invoice.id %}
-                                <a class="btn btn-default" href="{{path('invoice_email', {id : invoice.id})}}"><span class="glyphicon glyphicon-envelope"></span></a>
+                                <a title="Send Invoice to Customer" class="btn btn-default" href="{{path('invoice_email', {id : invoice.id})}}"><span class="glyphicon glyphicon-envelope"></span></a>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                         Actions
@@ -21,7 +22,7 @@
                                         <li><a href="{{path('invoice_payment', {id : invoice.id})}}"><span class="glyphicon glyphicon glyphicon-usd"></span> Add Payment</a></li>
                                         <li><a target="_blank" href="{{path('invoice_pdf', {id : invoice.id})}}"><span class="glyphicon glyphicon-print"></span> Download PDF</a></li>
                                         <li><a href="{{path('report_show_invoice', {id : invoice.id})}}"><span class="glyphicon glyphicon-time"></span> View Time Log</a></li>                                
-                                        <li><a href="{{path('invoice_email', {id : invoice.id})}}"><span class="glyphicon glyphicon-envelope"></span> Send Invoice Email</a></li>
+                                        <li><a href="{{path('invoice_custom_email', {id : invoice.id})}}"><span class="glyphicon glyphicon-envelope"></span> Send Email to Customer</a></li>
                                         <li><a class="deleteButton" href="{{path('invoice_delete', {id : invoice.id})}}"><span class="glyphicon glyphicon-trash"></span> Delete Invoice</a></li>
                                     </ul>
                                 </div>

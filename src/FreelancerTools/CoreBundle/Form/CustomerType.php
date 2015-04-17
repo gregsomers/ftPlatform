@@ -32,8 +32,7 @@ class CustomerType extends AbstractType {
         );
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $transformer = new TagTransformer($this->em, $this->user);
+    public function buildForm(FormBuilderInterface $builder, array $options) {        
 
         $builder
                 ->add('name')
@@ -48,7 +47,7 @@ class CustomerType extends AbstractType {
     }
 
     public function getName() {
-        return 'dime_timetrackerbundle_customertype';
+        return 'ft_timetrackerbundle_customertype';
     }
 
 }
