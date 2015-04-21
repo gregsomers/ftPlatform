@@ -1,0 +1,17 @@
+
+<div class="form-group" ng-form="{{field}}" ng-class="{'has-error':{{field}}.$dirty && {{field}}.$invalid}">
+
+    <label class="control-label col-lg-2" for="{{field}}">{{field}}</label>
+
+    <div class="col-lg-10" ng-switch="required">
+        <input ng-switch-when="true" ng-change="update()" ng-blur="blurUpdate()" type="{{record[field][1]}}" ng-model="record[field][0]" name="{{field}}" required="required" class="form-control"/>
+        <input ng-switch-default ng-change="update()" ng-blur="blurUpdate()" type="{{record[field][1]}}" ng-model="record[field][0]" name="{{field}}" maxlength="255" class="form-control"/>
+    </div>
+    
+    <div class="col-lg-10 has-error" ng-show="{{field}}.$dirty && {{field}}.$invalid" ng-messages="{{field}}.$error">
+        <p class="control-label" ng-message="required">{{field}} is required.</p>
+        
+    </div>
+    
+
+</div>

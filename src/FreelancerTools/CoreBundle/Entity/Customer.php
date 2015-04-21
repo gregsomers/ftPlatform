@@ -17,6 +17,7 @@ use FreelancerTools\TimeTrackerBundle\Entity\Project;
  *   uniqueConstraints={ @ORM\UniqueConstraint(name="unique_customer_alias_user", columns={"alias", "user_id"}) }
  * )
  * @ORM\Entity(repositoryClass="FreelancerTools\CoreBundle\Entity\CustomerRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class Customer extends Entity {
 
@@ -25,30 +26,37 @@ class Customer extends Entity {
      *
      * @Assert\NotBlank()
      * @ORM\Column(type="string", length=255)
+     * @JMS\Expose()
      */
     protected $name;
 
     /**
      * @var string $address
      * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
      */
     protected $address;
 
     /**
      * @var string $contact
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
      */
     protected $contact;
 
     /**
      * @var string $phoneNumer
      * @ORM\Column(type="string", length=25, nullable=true)
+     * @JMS\Expose()
+     * @JMS\SerializedName("phoneNumber")    
      */
     protected $phoneNumber;
 
     /**
      * @var string $emailAddress
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
+     * @JMS\SerializedName("emailAddress")
      */
     protected $emailAddress;
 
@@ -59,17 +67,31 @@ class Customer extends Entity {
      * @ORM\Column(type="string", length=30, nullable=true)
      */
     protected $alias;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="\FreelancerTools\TimeTrackerBundle\Entity\Project", mappedBy="customer", cascade={"remove"})
      */
     protected $projects;
+
     /**
      * Entity constructor
      */
     public function __construct() {
         //$this->tags = new ArrayCollection();
         $this->projects = new ArrayCollection();
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("projects")
+     * 
+     */
+    public function getProjectIdsOnly() {
+        $ids = array();
+        foreach ($this->projects as $project) {
+            $ids[] = $project->getId();
+        }
+        return $ids;
     }
 
     /**
@@ -126,16 +148,15 @@ class Customer extends Entity {
         }
 
         return $customer;
-    } 
-   
+    }
+
     /**
      * Set address
      *
      * @param string $address
      * @return Customer
      */
-    public function setAddress($address)
-    {
+    public function setAddress($address) {
         $this->address = $address;
 
         return $this;
@@ -146,8 +167,7 @@ class Customer extends Entity {
      *
      * @return string 
      */
-    public function getAddress()
-    {
+    public function getAddress() {
         return $this->address;
     }
 
@@ -157,8 +177,7 @@ class Customer extends Entity {
      * @param string $contact
      * @return Customer
      */
-    public function setContact($contact)
-    {
+    public function setContact($contact) {
         $this->contact = $contact;
 
         return $this;
@@ -169,8 +188,7 @@ class Customer extends Entity {
      *
      * @return string 
      */
-    public function getContact()
-    {
+    public function getContact() {
         return $this->contact;
     }
 
@@ -180,8 +198,7 @@ class Customer extends Entity {
      * @param string $phoneNumer
      * @return Customer
      */
-    public function setPhoneNumber($phoneNumber)
-    {
+    public function setPhoneNumber($phoneNumber) {
         $this->phoneNumber = $phoneNumber;
 
         return $this;
@@ -192,8 +209,7 @@ class Customer extends Entity {
      *
      * @return string 
      */
-    public function getPhoneNumber()
-    {
+    public function getPhoneNumber() {
         return $this->phoneNumber;
     }
 
@@ -203,20 +219,16 @@ class Customer extends Entity {
      * @param string $emailAddress
      * @return Customer
      */
-    public function setEmailAddress($emailAddress)
-    {
+    public function setEmailAddress($emailAddress) {
         $this->emailAddress = $emailAddress;
 
         return $this;
     }
 
-    
-    public function getEmailAddress()
-    {
+    public function getEmailAddress() {
         return $this->emailAddress;
     }
-    
-    
+
     public function addProject(Project $project) {
         $this->projects[] = $project;
 
@@ -239,5 +251,4 @@ class Customer extends Entity {
         return $this;
     }
 
-   
 }

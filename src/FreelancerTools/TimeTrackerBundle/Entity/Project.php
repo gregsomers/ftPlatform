@@ -19,6 +19,7 @@ use FreelancerTools\CoreBundle\Entity\Customer;
  *   uniqueConstraints={ @ORM\UniqueConstraint(name="unique_project_alias_user", columns={"alias", "user_id"}) }
  * )
  * @ORM\Entity(repositoryClass="FreelancerTools\TimeTrackerBundle\Entity\ProjectRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class Project extends Entity {
 
@@ -27,6 +28,7 @@ class Project extends Entity {
      *
      * @ORM\ManyToOne(targetEntity="\FreelancerTools\CoreBundle\Entity\Customer", inversedBy="projects")
      * @ORM\JoinColumn(name="customer_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * @JMS\Expose()
      */
     protected $customer;
 
@@ -35,6 +37,7 @@ class Project extends Entity {
      *
      * @Assert\NotBlank()
      * @ORM\Column(type="string", length=255)
+     * @JMS\Expose()
      */
     protected $name;
 

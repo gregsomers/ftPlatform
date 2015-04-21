@@ -15,6 +15,7 @@ use FreelancerTools\CoreBundle\Entity\Entity;
  * @ORM\Table(name="timeslices")
  * @ORM\Entity(repositoryClass="FreelancerTools\TimeTrackerBundle\Entity\TimesliceRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @JMS\ExclusionPolicy("all")
  */
 class Timeslice extends Entity
 {
@@ -24,6 +25,7 @@ class Timeslice extends Entity
      * @Assert\NotNull()
      * @ORM\ManyToOne(targetEntity="Activity", inversedBy="timeslices", cascade="persist")
      * @ORM\JoinColumn(name="activity_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @JMS\Expose()
      */
     protected $activity;
 
@@ -32,6 +34,7 @@ class Timeslice extends Entity
      * @var integer $duration (in seconds)
      *
      * @ORM\Column(type="integer", nullable=false)
+     * @JMS\Expose()
      */
     protected $duration = 0;
 
@@ -41,6 +44,7 @@ class Timeslice extends Entity
      * @Assert\DateTime()
      * @JMS\SerializedName("startedAt")
      * @ORM\Column(name="started_at", type="datetime", nullable=true)
+     * @JMS\Expose()
      */
     protected $startedAt;
 
@@ -50,21 +54,25 @@ class Timeslice extends Entity
      * @Assert\DateTime()
      * @JMS\SerializedName("stoppedAt")
      * @ORM\Column(name="stopped_at", type="datetime", nullable=true)
+     * @JMS\Expose()
      */
     protected $stoppedAt;
     
     /**    
      * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
      */
     protected $notes;
     
     /**    
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
      */
     protected $status;
     
     /**     
      * @ORM\Column(name="invoiced", type="boolean", options={"default" = 0})
+     * @JMS\Expose()
      */
     protected $invoiced = false;
     

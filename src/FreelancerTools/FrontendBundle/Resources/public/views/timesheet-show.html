@@ -1,0 +1,46 @@
+<div class="box">
+    <div class="title">
+        {{project.name}} Timesheet    
+    </div>
+    <div class="content">
+
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th ng-click="sort('slice.startedAt')">
+                        Date
+                        <span ng-show="sort.field === 'slice.startedAt' && !sort.order" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="sort.field === 'slice.startedAt' && sort.order" class="glyphicon glyphicon-chevron-up"></span>
+                    </th>
+                    <th>Activity</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr ng-repeat="slice in slices| orderBy: sort.field : sort.order">
+                    <td>{{slice.startedAt|myDateFormat}}</td>
+                    <td>{{slice.activity.description}}</td>
+                    <td>{{slice.duration|secondsToDateFormat}}</td>
+                    <td>
+                        <span ng-show="!slice.invoiced" class="label label-default">Not Invoiced</span>
+                        <span ng-show="slice.invoiced" class="label label-success">Invoiced</span> 
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+    </div>
+</div>
+
+

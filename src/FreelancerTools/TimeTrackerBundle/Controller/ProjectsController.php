@@ -1,6 +1,7 @@
 <?php
 
 namespace FreelancerTools\TimeTrackerBundle\Controller;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,6 +10,8 @@ use FreelancerTools\TimeTrackerBundle\Form\ProjectInvoiceType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FreelancerTools\InvoicingBundle\Entity\InvoiceItem;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * @Route("/projects")
@@ -16,11 +19,53 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class ProjectsController extends Controller {
 
     /**
+     * @Route("/api/{id}", name="project_api_show")
+     * @Template()
+     */
+    public function apiShowAction($id) {
+        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);
+        $slices = $this->getTimesliceStorage()->getRepo()->getTimeslicesByProject($project);
+        $activities = $project->getActivities();
+
+        $serializer = $this->get('jms_serializer');
+
+        $response = new Response($serializer->serialize(
+                        array(
+                    'project' => $project,
+                    'slices' => $slices,
+                    'activities' => $activities
+                        )
+                        , 'json'));
+
+        //$response = new Response($serializer->serialize($project, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/api", name="project_api_index")
+     * @Template()
+     * @Method("GET")
+     */
+    public function apiIndexAction() {
+        $projects = $this->getProjectStorage()->getRepo()->getProjectsByUser($this->getUser());
+
+        $serializer = $this->get('jms_serializer');
+        $data = $serializer->serialize($projects, 'json');
+
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
      * @Route("/", name="projects")
      * @Template()
      */
     public function indexAction() {
-        $projects = $this->getProjectStorage()->getRepo()->getProjectsByUser($this->getUser());        
+        $projects = $this->getProjectStorage()->getRepo()->getProjectsByUser($this->getUser());
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -36,8 +81,8 @@ class ProjectsController extends Controller {
      * @Route("/project/{id}/{showArchived}", name="project_show", defaults={"showArchived": "0"})
      * @Template()
      */
-    public function showAction($id, $showArchived) {        
-        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);        
+    public function showAction($id, $showArchived) {
+        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);
         $slices = $this->getTimesliceStorage()->getRepo()->getTimeslicesByProject($project);
 
         $paginator = $this->get('knp_paginator');
@@ -77,7 +122,7 @@ class ProjectsController extends Controller {
 
         if ($form->isValid()) {
             $project->setUser($this->getUser());
-            $this->getProjectStorage()->update($project);            
+            $this->getProjectStorage()->update($project);
             $this->get('session')->getFlashBag()->add(
                     'success', "Project has been created."
             );
@@ -93,7 +138,7 @@ class ProjectsController extends Controller {
      * @Template()
      */
     public function editAction($id) {
-        $project = $this->getProjectStorage()->findOneBy(array('id' => $id));  
+        $project = $this->getProjectStorage()->findOneBy(array('id' => $id));
 
         $form = $this->createForm(new ProjectType($this->getDoctrine()->getManager(), $this->getUser()), $project);
         return array(
@@ -107,13 +152,13 @@ class ProjectsController extends Controller {
      * @Template("FreelancerToolsTimeTrackerBundle:Projects:edit.html.twig")
      */
     public function updateAction(Request $request, $id) {
-        $project = $this->getProjectStorage()->findOneBy(array('id' => $id));  
+        $project = $this->getProjectStorage()->findOneBy(array('id' => $id));
 
         $form = $this->createForm(new ProjectType($this->getDoctrine()->getManager(), $this->getUser()), $project);
         $form->bind($request);
 
         if ($form->isValid()) {
-            $this->getProjectStorage()->update($project);            
+            $this->getProjectStorage()->update($project);
             $this->get('session')->getFlashBag()->add(
                     'success', "Project has been updated."
             );
@@ -131,7 +176,7 @@ class ProjectsController extends Controller {
      * @Template("FreelancerToolsTimeTrackerBundle:Projects:edit.html.twig")
      */
     public function addtoInvoiceAction(Request $request, $id) {
-        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);            
+        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);
 
         $form = $this->createForm(new ProjectInvoiceType($this->getUser(), $project->getCustomer()), null)->bind($request);
 
@@ -175,31 +220,31 @@ class ProjectsController extends Controller {
 
         return $this->redirect($this->generateUrl('project_show', array('id' => $id)));
     }
-    
+
     /**
      * @Route("/projects/delete/{id}", name="project_delete")
      * 
      */
     public function deleteAction($id) {
 
-        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);          
+        $project = $this->getProjectStorage()->getRepo()->getSingleProject($id);
 
         if (!$project) {
             throw $this->createNotFoundException('Unable to find entity.');
         }
-        
-        $this->getProjectStorage()->delete($project);     
+
+        $this->getProjectStorage()->delete($project);
 
         return new RedirectResponse($this->get('request')->server->get('HTTP_REFERER'));
     }
-    
+
     protected function getProjectStorage() {
         return $this->get('ft.storage')->getStorage('FreelancerTools\TimeTrackerBundle\Entity\Project');
     }
-    
+
     protected function getTimesliceStorage() {
         return $this->get('ft.storage')->getStorage('FreelancerTools\TimeTrackerBundle\Entity\Timeslice');
-    }  
+    }
 
     public function getSettingRepository() {
         return $this->getDoctrine()->getRepository('FreelancerToolsCoreBundle:Setting');

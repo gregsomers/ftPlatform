@@ -10,6 +10,7 @@ use FreelancerTools\CoreBundle\Entity\Entity;
 /** 
  * @ORM\Table(name="activities")
  * @ORM\Entity(repositoryClass="FreelancerTools\TimeTrackerBundle\Entity\ActivityRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class Activity extends Entity {
 
@@ -51,6 +52,7 @@ class Activity extends Entity {
      * @var string $description
      *
      * @ORM\Column(type="text", nullable=false)
+     * @JMS\Expose()
      */
     protected $description;
 
@@ -58,6 +60,7 @@ class Activity extends Entity {
      * @var float $rate
      *
      * @ORM\Column(type="decimal", scale=2, precision=10, nullable=true)
+     * @JMS\Expose()
      */
     protected $rate;
 
@@ -71,6 +74,7 @@ class Activity extends Entity {
 
     /**
      * @ORM\Column(name="archived", type="boolean", options={"default" = 0})
+     * @JMS\Expose()
      */
     protected $archived = false;
 

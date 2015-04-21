@@ -1,4 +1,5 @@
 <?php
+
 namespace FreelancerTools\CoreBundle\Entity;
 
 use DateTime;
@@ -6,28 +7,32 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation as JMS;
 
+
 /**
- * 
+ * @JMS\ExclusionPolicy("all")
  *
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class Entity
-{
+abstract class Entity {
+
     /**
      * @var integer $id
      *
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id;
 
     /**
      * @var User $user
      *
-     * @JMS\Exclude
+     * 
      * @ORM\ManyToOne(targetEntity="\FreelancerTools\CoreBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @JMS\Type("FreelancerTools\CoreBundle\Entity\User")
      */
     protected $user;
 
@@ -54,8 +59,7 @@ abstract class Entity
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -65,8 +69,7 @@ abstract class Entity
      * @param  User     $user
      * @return Activity
      */
-    public function setUser(\FreelancerTools\CoreBundle\Entity\User $user)
-    {
+    public function setUser(\FreelancerTools\CoreBundle\Entity\User $user) {
         $this->user = $user;
 
         return $this;
@@ -77,8 +80,7 @@ abstract class Entity
      *
      * @return User
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->user;
     }
 
@@ -87,8 +89,7 @@ abstract class Entity
      *
      * @return datetime
      */
-    public function getCreatedAt()
-    {
+    public function getCreatedAt() {
         return $this->createdAt;
     }
 
@@ -97,13 +98,11 @@ abstract class Entity
      *
      * @return datetime
      */
-    public function getUpdatedAt()
-    {
+    public function getUpdatedAt() {
         return $this->updatedAt;
     }
-    
-    public function setUpdatedAt($updatedAt)
-    {
+
+    public function setUpdatedAt($updatedAt) {
         $this->updatedAt = $updatedAt;
         return $this;
     }
@@ -113,8 +112,8 @@ abstract class Entity
      *
      * @return string
      */
-    public function __toString()
-    {
+    public function __toString() {
         return (string) $this->getId();
     }
+
 }
