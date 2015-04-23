@@ -69,7 +69,7 @@ assetic:
             output: js/app/moment.js
         ft_core_scripts:
             inputs:
-                - %kernel.root_dir%/../src/FreelancerTools/CoreBundle/Resources/public/js/ft_core_scripts.js
+                - '@FreelancerToolsCoreBundle/Resources/public/js/ft_core_scripts.js'
             output: js/ft_core_scripts.js
         core_css:
             inputs:
