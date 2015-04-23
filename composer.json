@@ -77,6 +77,11 @@
             }
         }             
     ],
+    "extra": {        
+        "branch-alias": {
+            "dev-master": "2.6-dev"
+        }
+    },
     "autoload": {
         "psr-0": {
             "FreelancerTools": "src/"
