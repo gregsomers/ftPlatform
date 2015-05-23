@@ -41,12 +41,13 @@ class TimesliceType extends AbstractType {
         $params['customer'] = $this->customer;
 
         $builder
-                ->add('duration')
+                //->add('duration')
                 ->add('startedAt', 'datetime', array(
                     'required' => false,
                     'widget' => 'single_text',
                     //http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
-                    'format' => 'MM/dd/yyyy h:mm:ss a',
+                    //'format' => 'MM/dd/yyyy h:mm:ss a',
+                    'format' => 'yyyy-MM-dd H:mm:ss ',
                     'attr' => array(
                         'placeholder' => "mm/dd/yyyy h:m:s"
                     )
@@ -54,7 +55,8 @@ class TimesliceType extends AbstractType {
                 ->add('stoppedAt', 'datetime', array(
                     'required' => false,
                     'widget' => 'single_text',
-                    'format' => 'MM/dd/yyyy h:mm:ss a',
+                    //'format' => 'MM/dd/yyyy h:mm:ss a',
+                    'format' => 'yyyy-MM-dd H:mm:ss ',
                     'attr' => array(
                         'placeholder' => "mm/dd/yyyy h:m:s"
                     )

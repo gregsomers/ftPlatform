@@ -24,15 +24,13 @@ class PaymentType extends AbstractType {
 
         $builder
                 ->add('method')
-                ->add('amount')               
+                ->add('amount')  
+                ->add('invoice')  
                 ->add('date', 'datetime', array(
                     'label' => "Payment Date",
-                    'required' => false,
+                    'required' => true,
                     'widget' => 'single_text',
-                    'format' => 'MM/dd/yyyy',
-                    'attr' => array(
-                        'placeholder' => "mm/dd/yyyy"
-                    )
+                    'format' => 'yyyy-MM-dd'                    
                 ))
                 ->add('notes', null, array('required' => false))      
                 ->add('notes', null, array('required' => false))       

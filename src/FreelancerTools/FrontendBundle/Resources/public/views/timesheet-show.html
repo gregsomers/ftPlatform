@@ -1,46 +1,106 @@
 <div class="box">
     <div class="title">
-        {{project.name}} Timesheet    
+        <div class="clearfix">
+            <div class="pull-left">{{vm.project.name}} Timesheet </div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button ng-click="vm.back()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> Back to List</button>
+                    <button ng-click="vm.toggleActive()" class="btn btn-sm btn-default">Toggle Active</button>
+                    <button ng-click="vm.edit()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Edit Project</button>
+                    <button ng-click="vm.addActivity()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Add Activity</button>
+                </div>
+            </div>   
+        </div>
     </div>
-    <div class="content">
+    <div class="content">    
+        <p class="text-muted">
+            {{vm.project.description}}
+        </p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="col-lg-12">
+                    <dl class="dl-horizontal">
+                        <dt>Client</dt> <dd><a href="#/clients/{{vm.project.client.id}}">{{vm.project.client.name}}</a></dd>
+                        <dt>Unbilled Hours</dt> <dd>{{vm.project.getUnbilledTime() | secondsToDateFormat}}</dd>
+                        <dt>Value of Unbilled Hours</dt> <dd>{{vm.project.getUnbilledValue() | currency:"$"}}</dd>
+                        <dt>Total Project Hours</dt> <dd>{{vm.project.getTotalTime() | secondsToDateFormat}}</dd>
+                        <dt>Billed Hours</dt> <dd>{{vm.project.getBilledTime() | secondsToDateFormat}}</dd>
+                        <dt>Hourly Rate</dt> <dd>{{vm.project.rate| currency:"$"}}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
+        <tabset>
+            <tab active="vm.tab[0].active" heading="Activities">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>                            
+                            <th>Total Hours</th>
+                            <th>Billed Hours</th>
+                            <th>Unbilled Hours</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="activity in vm.project.activities| orderBy: 'createdAt' : true | archived:vm.showArchived">
+                            <td>{{activity.description}} <span ng-show="activity.getRunningTimeslice()" class="label label-primary">In Progress</span></td>                            
+                            <td>{{activity.getTotalTime() | secondsToDateFormat}}</td>
+                            <td>{{activity.getBilledTime() | secondsToDateFormat}}</td>
+                            <td>{{activity.getUnbilledTime() | secondsToDateFormat}}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button ng-disabled="activity.archived" ng-show="!activity.getRunningTimeslice()" ng-click="vm.start(activity)" class="btn btn-sm btn-success tt-timer-start" title="Start"><span class="glyphicon glyphicon-play"></span></button>
+                                    <button ng-show="activity.getRunningTimeslice()" ng-click="vm.stop(activity.getRunningTimeslice())" class="btn btn-sm btn-danger tt-timer-stop" title="Stop"><span class="glyphicon glyphicon-stop"></span></button>
 
+                                    <button ng-click="vm.editActivity(activity)" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
+                                    <button ng-really-type="delete" ng-really-click="vm.removeActivity(activity)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                </div>
+                            </td>                          
+                        </tr>
+                    </tbody>
+                </table>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th ng-click="sort('slice.startedAt')">
-                        Date
-                        <span ng-show="sort.field === 'slice.startedAt' && !sort.order" class="glyphicon glyphicon-chevron-down"></span>
-                        <span ng-show="sort.field === 'slice.startedAt' && sort.order" class="glyphicon glyphicon-chevron-up"></span>
-                    </th>
-                    <th>Activity</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <tr ng-repeat="slice in slices| orderBy: sort.field : sort.order">
-                    <td>{{slice.startedAt|myDateFormat}}</td>
-                    <td>{{slice.activity.description}}</td>
-                    <td>{{slice.duration|secondsToDateFormat}}</td>
-                    <td>
-                        <span ng-show="!slice.invoiced" class="label label-default">Not Invoiced</span>
-                        <span ng-show="slice.invoiced" class="label label-success">Invoiced</span> 
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
+            </tab>      
+            <tab active="vm.tab[1].active" heading="Time Slices">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Activity</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="slice in vm.project.timeslices| orderBy: 'startedAt' : true">
+                            <td>{{slice.startedAt|myDateFormat}}</td>
+                            <td>{{slice.activity.description}}</td>
+                            <td>
+                                {{slice.duration|secondsToDateFormat}}
+                            </td>                            
+                            <td>
+                                <span ng-show="!slice.isBilled() && slice.stoppedAt" class="label label-default">Not Invoiced</span>
+                                <span ng-show="slice.isBilled()" class="label label-success">Invoiced</span> 
+                                <span ng-show="!slice.stoppedAt" class="label label-primary">In Progress</span> 
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button ng-click="vm.stop(slice)" ng-show="!slice.stoppedAt" class="btn btn-sm btn-danger tt-timer-stop" title="Stop"><span class="glyphicon glyphicon-stop"></span></button>
+                                    <button ng-click="vm.editTimeslice(slice)" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>                 
+                                    <button ng-really-type="delete" ng-really-click="vm.removeSlice(slice)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </tab>                  
+        </tabset>
 
 
 
     </div>
 </div>
-
 

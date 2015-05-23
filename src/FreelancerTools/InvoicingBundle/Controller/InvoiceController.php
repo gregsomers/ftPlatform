@@ -7,15 +7,47 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use FreelancerTools\InvoicingBundle\Form\InvoiceType;
-use FreelancerTools\InvoicingBundle\Form\PaymentType;
 use FreelancerTools\InvoicingBundle\Form\EmailInvoiceType;
 use FreelancerTools\InvoicingBundle\Entity\Invoice;
-use FreelancerTools\InvoicingBundle\Entity\Payment;
-use FreelancerTools\InvoicingBundle\Entity\InvoiceItem;
+use Symfony\Component\HttpFoundation\Response;
 use \DateTime;
 use \mPDF;
 
 class InvoiceController extends Controller {
+    
+    /**
+     * @Route("/invoices/api/{id}", name="invoices_api_show")
+     * @Template()
+     */
+    public function apiShowAction($id) {
+
+        $invoice = $this->getInvoiceRepository()->findOneById($id);
+
+        $serializer = $this->get('jms_serializer');
+        $data = $serializer->serialize($invoice, 'json');
+
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+    
+    /**
+     * @Route("/invoices/api", name="invoices_api")
+     * @Template()
+     */
+    public function apiIndexAction() {
+
+        $invoices = $this->getInvoiceStorage()->getRepo()->getInvoices($this->getUser());
+
+        $serializer = $this->get('jms_serializer');
+        $data = $serializer->serialize($invoices, 'json');
+
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 
     /**
      * @Route("/invoices/", name="invoices")
@@ -194,7 +226,7 @@ class InvoiceController extends Controller {
 
     /**
      * @Route("/guest/invoices/pdf/{token}", name="invoice_pdf_guest")
-     * @Route("/invoices/pdf/{id}", name="invoice_pdf")
+     * @Route("/invoices/pdf/{token}", name="invoice_pdf")
      * @Template()
      */
     public function pdfAction($token) {
@@ -322,6 +354,8 @@ class InvoiceController extends Controller {
      * @Template("FreelancerToolsInvoicingBundle:Invoice:edit.html.twig")
      */
     public function updateAction(Request $request, $id) {
+        
+        //print_r($request->getContent());
 
         $invoice = $this->getInvoiceRepository()->findOneById($id);
 
@@ -338,7 +372,7 @@ class InvoiceController extends Controller {
             $this->get('session')->getFlashBag()->add(
                     'success', "Invoice Saved."
             );
-            return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));
+            //return $this->redirect($this->generateUrl('invoice_edit', array('id' => $invoice->getId())));
         }
 
         return array(

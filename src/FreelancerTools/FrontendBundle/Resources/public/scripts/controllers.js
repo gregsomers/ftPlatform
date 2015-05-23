@@ -1,127 +1,105 @@
-angular.module('ftApp')
-        .controller('ClientListCtrl', function ($scope, Client, $location) {
-            $scope.clients = Client.get();
-            $scope.fields = ['name'];
+(function () {
+    'use strict';
 
-            $scope.sort = function (field) {
-                $scope.sort.field = field;
-                $scope.sort.order = !$scope.sort.order;
-            };
+    angular.module('ftApp')
 
-            $scope.sort.field = "name";
-            $scope.sort.order = false;
+            .controller('ActiveTimesliceCounterCtrl', function (DS, $location, $global) {
+                var vm = this;
+                vm.global = $global;
 
-            $scope.edit = function (id) {
-                $location.url('/client/' + id);
+                if ($global.getActiveSliceId()) {
+                    vm.activeSlice = $global.getActiveSlice();
 
-                console.log("navigate to edit " + id);
-            };
-            $scope.remove = function (id) {
-                Client.remove(id);
-            };
-
-
-            $scope.create = function () {
-                $location.url('/client/new');
-            };
-
-
-        })
-
-        .controller('TimesheetListCtrl', function ($scope, Project, $location) {
-            $scope.projects = Project.get();
-            $scope.fields = ['name', 'customer.name'];
-
-            $scope.sort = function (field) {
-                $scope.sort.field = field;
-                $scope.sort.order = !$scope.sort.order;
-            };
-
-            $scope.sort.field = "name";
-            $scope.sort.order = false;
-
-            $scope.show = function (id) {
-                $location.url('/timesheet/' + id);
-            };
-        })
-
-        .controller('TimesheetShowCtrl', function ($scope, Project, $location, $routeParams) {
-
-            $scope.id = $routeParams.id;
-            $scope.project = {};
-            $scope.slices = {};
-            $scope.activities = {};
-
-            Project.getById($scope.id).success(function (data) {
-                $scope.project = data.project;
-                $scope.slices = data.slices;
-                $scope.activities = data.activities;
-                console.log(data);
-            });
-
-            $scope.fields = ['slice.startedAt', 'slice.activity', 'slice.time'];
-
-            $scope.sort = function (field) {
-                $scope.sort.field = field;
-                $scope.sort.order = !$scope.sort.order;
-            };
-
-            $scope.sort.field = "slice.startedAt";
-            $scope.sort.order = false;
-
-            $scope.tabs = [
-                {title: 'Timeslices', content: 'Dynamic content 1'},
-                {title: 'Activities', content: 'Dynamic content 2', disabled: true}
-            ];
-
-        })
-
-        .controller('ClientNewCtrl', function ($scope, Client, $location) {
-            $scope.client = {};
-
-            $scope.save = function () {
-
-                //
-                console.log("%o", $scope.client);
-
-                if ($scope.client.$invalid) {
-
-                } else {
-                    Client.insert($scope.client);
-                    $location.url('/clients');
                 }
 
-            };
-        })
 
-        .controller('ClientEditCtrl', function ($scope, Client, $location, $routeParams) {
+                vm.goToTimesheet = function (id) {
+                    console.log("goToTimesheet " + id);
+                    $location.url('/timesheet/' + id);
+                };
+                /*
+                 vm.$watch(function () {
+                 return $global.getActiveSlice();
+                 }, function (newVal) {
+                 console.log('data changes into: ', newVal);
+                 vm.slice = newVal;
+                 }, false);     */
+            })
 
-            $scope.id = $routeParams.id;
-            $scope.client = {};
+            .controller('NavMenuCtrl', function ($location) {
+                var vm = this;
+                vm.isActive = function (viewLocation) {
+                    var url = $location.path();
+                    return url.indexOf(viewLocation) > -1;
+                };
+                vm.menuClass = function (page) {
+                    var current = $location.path().substring(1);
+                    return page === current ? "current" : "";
+                };
+            })
 
-            Client.getById($scope.id).success(function (data) {
-                $scope.client = data;
-            });
-
-
-            $scope.save = function () {
-
-                console.log("%o", $scope.client);
-
-                Client.update($scope.id, $scope.client);
-
-                if ($scope.client.$invalid) {
-
-                } else {
-                    //Client.insert($scope.client);
-
-                    $location.url('/clients');
-                }
-
-            };
-        })
-
-
-        ;
+            .controller('HeaderCtrl', function ($location) {
+                var vm = this;
+                vm.isActive = function (viewLocation) {
+                    var url = $location.path();
+                    return url.indexOf(viewLocation) > -1;
+                };
+                vm.menuClass = function (page) {
+                    var current = $location.path().substring(1);
+                    return page === current ? "current" : "";
+                };
+            })
 
 
+            .controller('EmailTemplateEditCtrl', function (DS, $location, ngToast, $global, $routeParams, $http) {
+                var vm = this;
+                vm.templates = {};
+                vm.tabs = [
+                    {},
+                    {}
+                ];
+
+                var templates = DS.getAll('emailtemplates');
+                templates.forEach(function (data) {
+                    vm.templates[data.name] = data;
+                });
+
+                vm.save = function () {
+                    angular.forEach(vm.templates, function (template, key) {
+                        template.DSSave();
+                    });
+                };
+            })
+
+            
+
+
+            .controller('SettingsEditCtrl', function (DS, $location, ngToast, $global, $routeParams, $http) {
+                var vm = this;
+                vm.settings = {};
+                vm.tabs = [
+                    {},
+                    {}
+                ];
+
+                var settings = DS.getAll('settings');
+                settings.forEach(function (data) {
+                    vm.settings[data.idString] = data;
+                });
+
+                vm.save = function () {
+                    angular.forEach(vm.settings, function (setting, key) {
+                        if (setting.idString === 'email_password') {
+                            if (setting.value) {
+                                //console.log("updating password");
+                                setting.DSSave();
+                            }
+                        } else {
+                            setting.DSSave();
+                        }
+                    });
+                };
+            })
+
+            ;
+})();

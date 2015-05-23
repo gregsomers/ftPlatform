@@ -12,11 +12,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use FreelancerTools\CoreBundle\Entity\Entity;
 use FreelancerTools\CoreBundle\Entity\Customer;
 
-/** 
- * @UniqueEntity(fields={"alias", "user"})
+/**
+ * 
  * @ORM\Table(
- *   name="projects",
- *   uniqueConstraints={ @ORM\UniqueConstraint(name="unique_project_alias_user", columns={"alias", "user_id"}) }
+ *   name="projects"   
  * )
  * @ORM\Entity(repositoryClass="FreelancerTools\TimeTrackerBundle\Entity\ProjectRepository")
  * @JMS\ExclusionPolicy("all")
@@ -29,8 +28,9 @@ class Project extends Entity {
      * @ORM\ManyToOne(targetEntity="\FreelancerTools\CoreBundle\Entity\Customer", inversedBy="projects")
      * @ORM\JoinColumn(name="customer_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      * @JMS\Expose()
+     * @JMS\SerializedName("client")
      */
-    protected $customer;
+    protected $customer;    
 
     /**
      * @var string $name
@@ -40,15 +40,14 @@ class Project extends Entity {
      * @JMS\Expose()
      */
     protected $name;
-
+    
     /**
-     * @var string $alias
+     * @var string $description
      *
-     * @Assert\NotBlank()
-     * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
      */
-    protected $alias;
+    protected $description;
 
     /**
      * @var DateTime $startedAt
@@ -74,14 +73,7 @@ class Project extends Entity {
      * @Assert\Date()
      * @ORM\Column(name="deadline", type="datetime", nullable=true)
      */
-    protected $deadline;
-
-    /**
-     * @var string $description
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    protected $description;
+    protected $deadline;    
 
     /**
      * @var integer $budgetPrice
@@ -111,17 +103,20 @@ class Project extends Entity {
      * @var float $rate
      *
      * @ORM\Column(type="decimal", scale=2, precision=10, nullable=true)
+     * @JMS\Expose()
      */
     protected $rate;
 
     /**
      * @ORM\Column(name="active", type="boolean")
+     * @JMS\Expose()
      */
     protected $active = true;
 
     /**
      * @ORM\OneToMany(targetEntity="Activity", mappedBy="project")
      * @ORM\OrderBy({"updatedAt" = "DESC"})
+     * @JMS\Expose()
      * */
     private $activities;
 
@@ -130,6 +125,28 @@ class Project extends Entity {
      */
     public function __construct() {
         $this->activities = new ArrayCollection();
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("client_id")     
+     */
+    public function getCustomerIdy() {
+        return  $this->getCustomer()->getId();      
+        
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("activities")     
+     */
+    public function getActivityIds() {
+        $ids = array();
+        foreach($this->activities as $activity) {
+            $ids[] = $activity->getId();
+        } 
+        return  $ids;       
+       
     }
 
     public function getUnbilledTime($seconds = false) {

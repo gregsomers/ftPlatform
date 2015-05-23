@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title">Unbilled Projects</h3>
+</div>
+<div class="modal-body">
+    <form name="projectSelectionForm" novalidate>
+
+        <div class="form-group">
+            <label>Select a Project</label>
+            <select name="client" class="form-control" required="required" ng-model="modal.project" 
+                    ng-options="project as project.name for project in modal.projects track by project.id">                        
+            </select>
+        </div>        
+
+    </form>
+
+    <form ng-show="modal.project" name="unbilledSelectionForm" novalidate>
+        <div class="form-group">
+            <label>Bill up to</label>
+            <input data-date-picker="" data-format="YYYY-MM-DD" type="text" name="date" class="form-control" required="required" ng-model="modal.date">
+        </div>          
+        
+        <div class="form-group">
+            <label>How to show on invoice</label>
+            <select name="show" class="form-control" required="required" ng-model="modal.sorting">      
+                <option selected="selected" value="project">Single line item for the project</option>
+                <option value="activity">Line item for each activity in the project</option>
+            </select>
+        </div>   
+        
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="projectSelectionForm.$invalid && unbilledSelectionForm.$invalid" ng-click="modal.ok()">Add</button>
+    <button class="btn btn-warning" ng-click="modal.cancel()">Cancel</button>
+</div>

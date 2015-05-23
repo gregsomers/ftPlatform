@@ -7,7 +7,7 @@ use FreelancerTools\CoreBundle\Entity\Entity;
 
 /** 
  * @ORM\Table(name="emailTemplates")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="FreelancerTools\CoreBundle\Entity\EmailTemplateRepository")
  */
 class EmailTemplate extends Entity {    
     

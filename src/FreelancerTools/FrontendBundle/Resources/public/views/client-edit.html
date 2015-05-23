@@ -1,0 +1,42 @@
+<div class="box">
+    <div class="title">
+        Edit Client
+    </div>
+    <div class="content">
+
+        <form name="newClientForm" novalidate> 
+
+            <div class="form-group" ng-class="{'has-error':newClientForm.name.$dirty && newClientForm.name.$invalid}">
+                <label>Client Name</label>
+                <input name="name" ng-model="modal.client.name" type="text" required="required" class="form-control"/>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':newClientForm.address.$dirty && newClientForm.address.$invalid}">
+                <label>Address</label>
+                <textarea expandable-textarea rows="1" name="address" ng-model="modal.client.address" type="text" required="required" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':newClientForm.contact.$dirty && newClientForm.contact.$invalid}">
+                <label>Contact Name</label>
+                <input name="contact" ng-model="modal.client.contact" type="text" required="required" class="form-control"/>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error': newClientForm.emailAddress.$dirty && newClientForm.emailAddress.$invalid}">
+                <label>Contact Email Address</label>
+                <input name="emailAddress" ng-model="modal.client.emailAddress" type="email" required="required" class="form-control"/>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':newClientForm.phoneNumber.$dirty && newClientForm.phoneNumber.$invalid}">
+                <label>Phone Number</label>
+                <input name="phoneNumber" ng-model="modal.client.phoneNumber" type="tel" class="form-control"/>
+            </div>
+
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="newClientForm.$invalid" ng-click="modal.ok()"><span class="glyphicon glyphicon-floppy-disk"> Save</span></button>
+    <button class="btn btn-warning" ng-click="modal.cancel()">Cancel</button>
+</div>
+
+

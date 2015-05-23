@@ -66,15 +66,11 @@ assetic:
         moment:
             inputs:
                 - %kernel.root_dir%/../vendor/moment/moment/min/moment.min.js
-            output: js/app/moment.js
+            output: js/moment.js
         ft_core_scripts:
             inputs:
                 - '@FreelancerToolsCoreBundle/Resources/public/js/ft_core_scripts.js'
-            output: js/ft_core_scripts.js
-        core_css:
-            inputs:
-                - '@FreelancerToolsCoreBundle/Resources/public/css/*'
-            output: css/app/core-styles.css
+            output: js/ft_core_scripts.js        
         
 braincrafted_bootstrap:
     less_filter: lessphp

@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use FreelancerTools\CoreBundle\Entity\Entity;
+use JMS\Serializer\Annotation as JMS;
+
 
 /**
  * @UniqueEntity(fields={"name", "namespace", "user"})
@@ -13,7 +15,8 @@ use FreelancerTools\CoreBundle\Entity\Entity;
  *      name="settings",
  *      uniqueConstraints={ @ORM\UniqueConstraint(name="unique_setting_name_namespace_user", columns={"`name`", "namespace", "user_id"}) }
  * )
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="FreelancerTools\CoreBundle\Entity\SettingRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class Setting extends Entity
 {
@@ -22,6 +25,7 @@ class Setting extends Entity
      *
      * @Assert\NotNull()
      * @ORM\Column(type="string", nullable=false, length=255)
+     * @JMS\Expose()
      */
     protected $name;
     
@@ -31,6 +35,7 @@ class Setting extends Entity
      *
      * @Assert\NotNull()
      * @ORM\Column(type="string", nullable=false, length=255)
+     * @JMS\Expose()
      */
     protected $namespace;
 
@@ -38,8 +43,18 @@ class Setting extends Entity
      * @var string
      *
      * @ORM\Column(type="text")
+     * @JMS\Expose()
      */
     protected $value;
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("idString")
+     * 
+     */
+    public function getStringId() {        
+        return $this->getNamespace() . "_" . $this->getName();
+    }
 
     /**
      * Set name

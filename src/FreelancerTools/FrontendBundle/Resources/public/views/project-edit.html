@@ -1,0 +1,55 @@
+<div class="box">
+    <div class="title">
+        <div class="clearfix">
+            <div class="pull-left">
+                Settings 
+            </div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button ng-disabled="projectForm.$invalid" ng-click="vm.save()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-disk"> Save</span></button>                                        
+                </div>
+            </div>   
+        </div>        
+    </div>
+    <div class="content clearfix">
+
+        <form name="projectForm" novalidate > 
+
+            <div class="form-group">
+                <label>Project Name</label>
+                <input type="text" name="name" class="form-control" required="required" ng-model="modal.project.name">
+            </div>
+
+            <div class="form-group">
+                <label>Project Description</label>
+                <textarea expandable-textarea rows="1"  name="description" class="form-control" ng-model="modal.project.description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Client</label>
+                <select id="client" name="client" required="required" class="form-control" ng-model="modal.project.client" 
+                        ng-options="client as client.name for client in modal.clients track by client.id">                        
+                </select>
+            </div> 
+            
+            <div class="form-group">
+                <label>Project Rate</label>
+                <input type="text" name="name" class="form-control" required="required" ng-model="modal.project.rate">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="active" ng-model="modal.project.active"> Project Active
+                    </label>
+                </div>    
+            </div>
+
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-disabled="projectForm.$invalid" ng-click="modal.ok()">Save</button>
+        <button class="btn btn-warning" ng-click="modal.cancel()">Cancel</button>
+    </div>
+</div>

@@ -2,10 +2,10 @@
 
 namespace FreelancerTools\InvoicingBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
+use FreelancerTools\CoreBundle\Entity\EntityRepository as Base;
 use FreelancerTools\CoreBundle\Entity\User;
 
-class InvoiceRepository extends EntityRepository {
+class InvoiceRepository extends Base {
 
     public function getInvoices(User $user, $recurring = false) {
         $qb = $this->createQueryBuilder("q");

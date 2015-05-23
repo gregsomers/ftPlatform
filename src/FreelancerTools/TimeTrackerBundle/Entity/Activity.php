@@ -35,6 +35,7 @@ class Activity extends Entity {
      *
      * @ORM\ManyToOne(targetEntity="Service")
      * @ORM\JoinColumn(name="service_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * @JMS\Expose()
      */
     protected $service;
 
@@ -45,6 +46,7 @@ class Activity extends Entity {
      * @JMS\SerializedName("timeslices")
      * @ORM\OneToMany(targetEntity="Timeslice", mappedBy="activity", cascade="persist")
      * @ORM\OrderBy({"startedAt" = "DESC"})
+     * @JMS\Expose()
      */
     protected $timeslices;
 
@@ -77,12 +79,41 @@ class Activity extends Entity {
      * @JMS\Expose()
      */
     protected $archived = false;
+    
+    /**    
+     * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
+     */
+    protected $notes;
 
     /**
      * Entity constructor
      */
     public function __construct() {
         $this->timeslices = new ArrayCollection();
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("timeslice_ids")
+     * 
+     */
+    public function getSliceIdsOnly() {
+        $ids = array();
+        foreach ($this->timeslices as $slice) {
+            if(!$slice->getInvoiced())
+                $ids[] = $slice->getId();
+        }
+        return $ids;
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("project_id")
+     * 
+     */
+    public function getProjectId() {
+        return $this->getProject()->getId();        
     }
 
     public function __toString() {
@@ -248,6 +279,18 @@ class Activity extends Entity {
 
     public function getArchived() {
         return $this->archived;
+    }
+    
+     public function setNotes($notes)
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }   
+      
+    public function getNotes()
+    {
+        return $this->notes;
     }
 
     public function getTotalTime() {

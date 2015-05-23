@@ -1,21 +1,26 @@
 <div class="box">
     <div class="title">
-        Clients        
-    </div>
-    <div class="content">
-
-        <div class="pull-right">
-            <button ng-click="create()" class="btn btn-default" title="New Customer"><span class="glyphicon glyphicon-plus"></span> New</button>
+        <div class="clearfix">
+            <div class="pull-left">
+                Clients
+            </div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button ng-click="vm.create()" class="btn btn-sm btn-default" title="New Customer"><span class="glyphicon glyphicon-plus"></span> New</button>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="content">       
 
         <input type="search" placeholder="Search" class="form-control" ng-model="queryFilter"/>
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th ng-click="sort('name')">
+                    <th ng-click="vm('name')">
                         Name
-                        <span ng-show="sort.field === 'name' && !sort.order" class="glyphicon glyphicon-chevron-down"></span>
-                        <span ng-show="sort.field === 'name' && sort.order" class="glyphicon glyphicon-chevron-up"></span>
+                        <span ng-show="vm.field === 'name' && !vm.order" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="vm.field === 'name' && vm.order" class="glyphicon glyphicon-chevron-up"></span>
                     </th>
                     <th>
                         &nbsp;
@@ -23,12 +28,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="client in clients| filter:queryFilter | orderBy: sort.field : sort.order">
+                <tr ng-repeat="client in vm.clients| filter:queryFilter | orderBy: vm.sort.field : vm.sort.order">
                     <td>{{client.name}}</td>
                     <td>
                         <div class="btn-group">
-                            <button ng-click="edit(client.id)" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>                 
-                            <button ng-click="remove(client.id)" type="reset" class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button ng-click="vm.edit(client)" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>                 
+                            <button ng-really-type="delete" ng-really-click="vm.remove(client)" class="btn btn-default btn-sm deleteButton" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
                         </div>
                     </td>
                 </tr>

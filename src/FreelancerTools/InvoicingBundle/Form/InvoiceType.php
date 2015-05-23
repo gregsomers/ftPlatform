@@ -21,28 +21,19 @@ class InvoiceType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-
         $builder
                 ->add('customer')
-                //->add('invoiceDate')
                 ->add('invoiceDate', 'datetime', array(
                     'label' => "Date",
                     'required' => false,
                     'widget' => 'single_text',
-                    'format' => 'MM/dd/yyyy',
-                    'attr' => array(
-                        'placeholder' => "mm/dd/yyyy"
-                    )
+                    'format' => 'yyyy-MM-dd',                    
                 ))
-                //->add('invoiceDueDate')
                 ->add('invoiceDueDate', 'datetime', array(
                     'label' => "Due Date",
                     'required' => false,
                     'widget' => 'single_text',
-                    'format' => 'MM/dd/yyyy',
-                    'attr' => array(
-                        'placeholder' => "mm/dd/yyyy"
-                    )
+                    'format' => 'yyyy-MM-dd',                    
                 ))
                 ->add('status', 'choice', array(
                     'choices' => array(                        
@@ -52,18 +43,12 @@ class InvoiceType extends AbstractType {
                         '4' => 'Overdue'
                     )
                 ))
-                ->add('currency')
-                /*
-                ->add('currency', 'choice', array(
-                    'choices' => array(
-                        'CAD' => 'CAD',
-                        'USD' => 'USD',                        
-                    )
-                ))*/
+                ->add('currency')                
                 ->add('invoiceNumber')
                 ->add('showTimelog', null, array('required' => false))
                 ->add('terms', null, array('attr' => array('rows' => 5)))
-                ->add('items', 'collection', array('type' => new InvoiceItemType(), 'allow_add' => true,));
+                //->add('items', 'collection', array('type' => new InvoiceItemType(), 'allow_add' => true,))
+                ;
     }
 
     public function getName() {

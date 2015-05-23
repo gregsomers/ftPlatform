@@ -87,11 +87,12 @@ class Customer extends Entity {
      * 
      */
     public function getProjectIdsOnly() {
+        /*
         $ids = array();
         foreach ($this->projects as $project) {
             $ids[] = $project->getId();
         }
-        return $ids;
+        return $ids;*/
     }
 
     /**

@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title">Activity</h3>
+</div>
+<div class="modal-body">
+    <form name="activityForm" novalidate> 
+        <div class="form-group" ng-class="{'has-error':activityForm.description.$dirty && activityForm.description.$invalid}">
+            <label for="description">Activity Description</label>
+            <input id="description" name="description" ng-model="modal.activity.description" type="text" required="required" class="form-control"/>
+        </div>
+        
+        <div class="form-group" ng-class="{'has-error':activityForm.notes.$dirty && activityForm.notes.$invalid}">
+            <label>Activity Notes</label>
+            <textarea expandable-textarea rows="1" name="notes" ng-model="modal.activity.notes" type="text" class="form-control"></textarea>
+        </div>
+        
+        <div class="form-group" ng-class="{'has-error':activityForm.description.$dirty && activityForm.description.$invalid}">
+            <label for="description">Activity Rate</label>
+            <input id="description" name="description" ng-model="modal.activity.rate" type="text" class="form-control"/>
+            <span class="help-block">Entering a rate on an activity will override the project rate, 
+                but only when added to invoices with an activity per line item, not as an entire project</span>
+        </div>
+        
+        <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="active" ng-model="modal.activity.archived"> Archived
+                    </label>
+                </div>    
+            </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="activityForm.$invalid" ng-click="modal.ok()">OK</button>
+    <button class="btn btn-warning" ng-click="modal.cancel()">Cancel</button>
+</div>

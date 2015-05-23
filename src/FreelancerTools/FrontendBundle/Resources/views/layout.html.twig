@@ -9,156 +9,333 @@
 
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
+        <link href='{{ asset('bundles/freelancertoolsfrontend/vendor/angular-loading-bar/build/loading-bar.min.css') }}' rel='stylesheet' type='text/css'>
+        <link href='{{ asset('bundles/freelancertoolsfrontend/vendor/ngToast-1.5.2/dist/ngToast.min.css') }}' rel='stylesheet' type='text/css'>
+        <link href='{{ asset('bundles/freelancertoolsfrontend/vendor/ngToast-1.5.2/dist/ngToast-animations.min.css') }}' rel='stylesheet' type='text/css'>
+
         {% block stylesheets %}            
             {% stylesheets
                 'css/bootstrap/bootstrap.css'
                 'css/bootstrap/bootstrap_form_2.css'
                 'css/datetimepicker.css'
-                'css/app/core-styles.css'
+                '../app/Resources/less/styles.less'
                 'css/app/tt-styles.css'
+                'bundles/bmatznerfontawesome/css/font-awesome.min.css'
                 filter='cssrewrite,lessphp' %}
             <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
-        {% endblock %}
-        
-        <link href='{{ asset('bundles/freelancertoolsfrontend/lib/angular-loading-bar/build/loading-bar.min.css') }}' rel='stylesheet' type='text/css'>
-        
+        {% endblock %}        
+
         <base href="/angular/" />
 
     </head>
-    <body>        
+    <body> 
+    <toast></toast>    
 
-        <div class="wrap">
+    <div class="ft-wrapper">
 
-            <div class="navbar-static-side">
-                <sidebar>
-                    {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
-                </sidebar>
-            </div>
+        <header ng-controller="HeaderCtrl">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="{{path('dashboard')}}">Freelancer Tools</a>
+                    </div>
 
-            <div class="page-wrapper" style="margin: 0 0 0 220px;">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">                    
+                        {% if app.user %}
+                            <ul class="nav navbar-nav navbar-right">
 
-                <nav class="navbar navbar-default" role="navigation">
-                    <div class="container-fluid">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a class="navbar-brand" href="{{path('dashboard')}}">Freelancer Tools</a>
-                        </div>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" title="System">
+                                        <i class="glyphicon glyphicon-cog"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{path('fos_user_profile_edit')}}">User Account</a></li>
+                                        <li><a href="{{path('fos_user_change_password')}}">Change Password</a></li>
+                                        <li><a href="#/emailTemplates">Manage Email Templates</a></li>  
+                                        <li><a href="#/currencies">Manage Currencies</a></li>   
+                                        <li><a href="#/paymentMethods">Manage Payment Methods</a></li>   
+                                        <li><a href="#/settings">System Settings</a></li>
+                                    </ul>
+                                </li>                                
+                                <li>
+                                    <a href="{{path('fos_user_security_logout')}}" title="Logout">
+                                        <span class="glyphicon glyphicon-off"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </header>
 
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">                    
-                            {% if app.user %}
-                                <ul class="nav navbar-nav navbar-right">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="System">
-                                            <i class="glyphicon glyphicon-cog"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="{{path('fos_user_profile_edit')}}">User Account</a></li>
-                                            <li><a href="{{path('fos_user_change_password')}}">Change Password</a></li>
-                                            <li><a href="{{path('email_templates')}}">Manage Email Templates</a></li>  
-                                            <li><a href="{{path('currency')}}">Manage Currencies</a></li>   
-                                            <li><a href="{{path('paymentmethod')}}">Manage Payment Methods</a></li>   
-                                            <li><a href="{{path('settings')}}">System Settings</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="{{path('fos_user_security_logout')}}" title="Logout">
-                                            <span class="glyphicon glyphicon-off"></span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            {% endif %}
-                        </div><!-- /.navbar-collapse -->
-                    </div><!-- /.container-fluid -->
-                </nav>
+        <sidebar ng-controller="NavMenuCtrl as vm">
+            <ul class="nav">
+                <li ng-class="{ current: vm.isActive('/dashboard')}" class="first">       
+                    <a href="#/dashboard"><span class="fa fa-tachometer"></span> <span class="text">Dashboard</span></a>        
+                </li>
+                <li ng-class="{ current: vm.isActive('/clients')}">        
+                    <a href="#/clients"><span class="fa fa-user"></span> <span class="text">Clients</span></a>        
+                </li>
+                <li ng-class="{ current: vm.isActive('/invoices')}">        
+                    <a href="#/invoices"><span class="fa fa-file-text-o"></span> <span class="text">Invoices</span></a>
+                </li>
+                <li ng-class="{ current: vm.isActive('/payments')}">        
+                    <a href="#/payments"><span class="fa fa-usd"></span> <span class="text">Payments</span></a>        
+                </li>
+                <li ng-class="{ current: vm.isActive('/timesheet')}" id="nav-timesheet">        
+                    <a href="#/timesheet"><span class="fa fa-clock-o"></span> <span class="text">Timesheet</span></a>
+                </li>
+                <li class="last">        
+                    <a href="#/report"><span class="fa fa-bar-chart"></span> <span class="text">Reports</span></a>        
+                </li>
+            </ul>
+            {% verbatim %}
+                <div ng-controller="ActiveTimesliceCounterCtrl as vm">
+                    <div ng-click="vm.goToTimesheet(vm.activeSlice.project_id)" ng-show="vm.activeSlice" class="ft-activeTimesliceCounter" > 
+                        <!--{{vm.activeSlice.startedAt}}    -->    
+                        <span data-ft-realtimeclock ng-model="vm.activeSlice">
+                            {{vm.activeSlice.counter|secondsToTimeFormat}}
+                        </span>
+                    </div>
+                </div>
+            {% endverbatim %}
+            <!--    
+                            <br/><br/><br/>
+            
+            {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu', {'allow_safe_labels': true }) }}-->
+        </sidebar>
 
+        <section id="ft-main-section">
+            <div class="content-wrapper">
                 <div class="container-fluid">
                     <div class="row">
-                        {% block sidebar %}   
-                            <!--<div class="col-md-1">
-                                
-                                <sidebar>
-                            {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
-                        </sidebar>
-                           
-                        </div> -->
-                        {% endblock %}   
-
-
                         {%verbatim %}
-                            <div class="col-md-12" role="main" ng-cloak ng-view>
-                               
+                            <div class="col-md-12" role="main" class="ng-cloak" ng-cloak ng-view autoscroll="true">
+
                             </div>    
                         {%endverbatim %}
-
-                        {% block body %}            
-                        {% endblock %}
-
-                        {% block fos_user_content %}
-                        {% endblock fos_user_content %}
                     </div>
                 </div>
             </div>
+        </section>
+
+
+
+
+    </div>
+
+    {#
+
+    <div class="wrap">  
+
+
+        <div class="navbar-static-side">
+            <sidebar ng-controller="NavMenuCtrl as vm">
+                <ul class="nav">
+                    <li id="nav-dashboard" class="first">       
+                        <a href="/"><i class="fa fa-tachometer"></i> Dashboard</a>        
+                    </li>
+                    <li ng-class="{ current: vm.isActive('/clients')}">        
+                        <a href="#/clients"><i class="fa fa-user"></i> Clients</a>        
+                    </li>
+                    <li ng-class="{ current: vm.isActive('/invoices')}">        
+                        <a href="#/invoices"><i class="fa fa-file-text-o"></i> Invoices</a>                
+                        <ul class="menu_level_1">
+                            <li class="hide first last">        
+                                <a href="/invoices/add">Add</a>        
+                            </li>
+                        </ul>
+                    </li>
+                    <li>        
+                        <a href="/payments"><i class="fa fa-usd"></i> Payments</a>        
+                    </li>
+                    <li ng-class="{ current: vm.isActive('/timesheet')}" id="nav-timesheet">        
+                        <a href="#/timesheet"><i class="fa fa-clock-o"></i> Timesheet</a>                
+                        <ul class="menu_level_1">
+                            <li class="hide first">        
+                                <a href="/activities/add">Activity Add</a>        
+                            </li>
+                            <li class="hide last">        
+                                <a href="/projects/add">Project Add</a>        
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="last">        
+                        <a href="/report"><i class="fa fa-bar-chart"></i> Reports</a>        
+                    </li>
+                </ul>
+                {% verbatim %}
+                    <div class="ft-activeTimesliceCounter" ng-controller="ActiveTimesliceCounterCtrl as vm"> 
+                        {{vm.global.getActiveSlice().startedAt}}    
+                        00:00:00
+                    </div>
+                {% endverbatim %}
+                <!--    
+                                <br/><br/><br/>
+                
+                {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu', {'allow_safe_labels': true }) }}-->
+            </sidebar>
         </div>
 
-        <!-- -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+        <div class="page-wrapper" style="margin: 0 0 0 220px;">
+
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="{{path('dashboard')}}">Freelancer Tools</a>
                     </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary confirmDelete">Delete</button>
-                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">                    
+                        {% if app.user %}
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="System">
+                                        <i class="glyphicon glyphicon-cog"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{path('fos_user_profile_edit')}}">User Account</a></li>
+                                        <li><a href="{{path('fos_user_change_password')}}">Change Password</a></li>
+                                        <li><a href="{{path('email_templates')}}">Manage Email Templates</a></li>  
+                                        <li><a href="{{path('currency')}}">Manage Currencies</a></li>   
+                                        <li><a href="{{path('paymentmethod')}}">Manage Payment Methods</a></li>   
+                                        <li><a href="{{path('settings')}}">System Settings</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="{{path('fos_user_security_logout')}}" title="Logout">
+                                        <span class="glyphicon glyphicon-off"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row">
+                    {% block sidebar %}   
+                        <!--<div class="col-md-1">
+                            
+                            <sidebar>
+                        {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
+                    </sidebar>
+                       
+                    </div> -->
+                    {% endblock %}   
+
+
+                    {%verbatim %}
+                        <div class="col-md-12" role="main" class="ng-cloak" ng-cloak ng-view>
+
+                        </div>    
+                    {%endverbatim %}
+
+                    {% block body %}            
+                    {% endblock %}
+
+                    {% block fos_user_content %}
+                    {% endblock fos_user_content %}
                 </div>
             </div>
         </div>
+    </div>
+                
+             #}      
 
-        {% javascripts 
+    <!-- -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-route.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-messages.min.js"></script>  
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-sanitize.min.js"></script>    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-animate.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-data/1.8.0/js-data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-data-angular/2.4.0/js-data-angular.js"></script>
+
+    {% javascripts 
                             'js/jquery.js'
                             'js/bootstrap.js'                            
-                            'js/app/*'
+                            'bundles/freelancertoolsfrontend/vendor/moment.js'
                             'js/datetimepicker.js'
                             'js/ft_core_scripts.js'
                              filter=''                            
-        %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 
-        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    <!--
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    -->  
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-route.min.js"></script>  
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-messages.min.js"></script>  
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap.min.js"></script>  
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script>  
-        
-        
 
-        <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/app.js') }}"></script>
-        <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers.js') }}"></script>
-        <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/services.js') }}"></script>
-        
-        
-        <script src="{{ asset('bundles/freelancertoolsfrontend/lib/angular-loading-bar/build/loading-bar.min.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/app.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/models.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/invoicesCtrl.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/timesheetsCtrl.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/clientsCtrl.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/paymentsCtrl.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/currenciesCtrl.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/paymentMethodsCtrl.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers/dashboardCtrl.js') }}"></script>    
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/controllers.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/services.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/scripts/routing.js') }}"></script>
 
-    {% block javascripts %}{% endblock %}  
+    
 
+
+    <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/angular-loading-bar/build/loading-bar.min.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/ngToast-1.5.2/dist/ngToast.min.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/moment-duration-format-1.3.0/lib/moment-duration-format.js') }}"></script>
+
+    <!--<script type="text/javascript" src="/bundles/ivoryckeditor/ckeditor.js"></script>-->
+    <script src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+
+{% block javascripts %}{% endblock %}  
+<script>
+                                    window.ftAppInitData = {{appInitData|raw}};
+</script>
 </body>
 </html>
 

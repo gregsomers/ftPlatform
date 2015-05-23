@@ -12,6 +12,7 @@ use FOS\UserBundle\Model\User as BaseUser;
  * @UniqueEntity(fields={"email"})
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="FreelancerTools\CoreBundle\Entity\UserRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class User extends BaseUser
 {
@@ -21,6 +22,7 @@ class User extends BaseUser
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @JMS\Expose()
      */
     protected $id;
 
@@ -28,6 +30,7 @@ class User extends BaseUser
      * @var string $firstname
      *
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
      */
     protected $firstname;    
     
@@ -36,17 +39,20 @@ class User extends BaseUser
      * @var string $lastname
      *
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
      */
     protected $lastname;
     
     /**
      * @var string $address
      * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
      */
     protected $address;
     
     /**   
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
      */
     protected $company;
 
@@ -68,6 +74,8 @@ class User extends BaseUser
      * @ORM\Column(name="updated_at", type="datetime")
      */
     protected $updatedAt;
+    
+    
 
     /**
      * Get id
@@ -147,6 +155,8 @@ class User extends BaseUser
 
     /**
      * get user as string
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("nameToString")
      *
      * @return string
      */

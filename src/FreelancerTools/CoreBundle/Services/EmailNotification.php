@@ -25,31 +25,32 @@ class EmailNotification {
         $this->twig = $twig;
     }
 
-    public function send($data, $object, $templateName, $attachedFile = null) { 
+    public function send($data, $object, $templateName, $attachedFile = null) {
 
         $message = \Swift_Message::newInstance()
                 ->setSubject($data['subject'])
                 ->setFrom($data['from'])
                 ->setTo($data['to'])
                 ->setCharset('UTF-8')
-                ->setContentType('text/html')
-                ->setBody(
-                $this->templating->render(
-                        'FreelancerToolsInvoicingBundle:Invoice:email.html.twig', array('body' => $this->renderEmailTemplate($object, $templateName))
-                )
-                )
-        ;
-        if($attachedFile) {
-            $message->attach(\Swift_Attachment::fromPath($attachedFile));
-        }
-        if(isset($data['cc'])) {            
-            $message->setCc($data['cc']);        
+                ->setContentType('text/html');
+        if ($templateName) {
+            $message->setBody(
+                    $this->templating->render(
+                            'FreelancerToolsInvoicingBundle:Invoice:email.html.twig', array('body' => $this->renderEmailTemplate($object, $templateName))
+                    )
+            );
         } else {
-            //$message->setCc($this->securityContext->getToken()->getUser()->getEmail());  
+            $message->setBody($data['body']);
         }
         
-        if(isset($data['bcc'])) {            
-            $message->setBcc($data['bcc']);  
+        if ($attachedFile) {
+            $message->attach(\Swift_Attachment::fromPath($attachedFile));
+        }
+        if (isset($data['cc'])) {
+            $message->setCc($data['cc']);
+        } 
+        if (isset($data['bcc'])) {
+            $message->setBcc($data['bcc']);
         }
 
         $mailer = \Swift_Mailer::newInstance($this->getTransport());

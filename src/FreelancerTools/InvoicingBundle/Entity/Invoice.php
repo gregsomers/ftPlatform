@@ -5,10 +5,12 @@ namespace FreelancerTools\InvoicingBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use FreelancerTools\CoreBundle\Entity\Entity;
+use JMS\Serializer\Annotation as JMS;
 
-/** 
+/**
  * @ORM\Table(name="invoices")
  * @ORM\Entity(repositoryClass="FreelancerTools\InvoicingBundle\Entity\InvoiceRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class Invoice extends Entity {
 
@@ -17,78 +19,89 @@ class Invoice extends Entity {
      *
      * @ORM\ManyToOne(targetEntity="FreelancerTools\CoreBundle\Entity\Customer")
      * @ORM\JoinColumn(name="customer_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * @JMS\Expose()
+     * @JMS\SerializedName("client")
      */
     protected $customer;
 
     /**
      * @ORM\OneToMany(targetEntity="InvoiceItem", mappedBy="invoice", cascade="persist")
      * //@ORM\OrderBy({"startedAt" = "DESC"})
+     * @JMS\Expose()
      */
     protected $items;
 
     /**
-     * @ORM\OneToMany(targetEntity="FreelancerTools\PaymentBundle\Entity\Payment", mappedBy="invoice", cascade="persist")     
+     * @ORM\OneToMany(targetEntity="FreelancerTools\PaymentBundle\Entity\Payment", mappedBy="invoice", cascade="persist")  
+     * @JMS\Expose()   
      */
     protected $payments;
 
     /**
-     * 
      * @ORM\Column(name="invoice_date", type="datetime")
      */
     protected $invoiceDate;
 
     /**
-     * 
      * @ORM\Column(name="due_date", type="datetime")
      */
     protected $invoiceDueDate;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @JMS\Expose()
      */
     protected $status = 1;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @JMS\Expose()
+     * @JMS\SerializedName("invoiceNumber")  
      */
     protected $invoiceNumber;
-    
+
     /**
      * @var Customer $customer
      *
      * @ORM\ManyToOne(targetEntity="FreelancerTools\PaymentBundle\Entity\Currency")
      * @ORM\JoinColumn(name="currency_id", referencedColumnName="id", nullable=false)
+     * 
      */
     protected $currency;
-    
+
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
      */
     protected $terms;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @JMS\Expose()
      */
     protected $token;
-    
+
     /**
      * @var ArrayCollection $timeslices    
      * @ORM\OneToMany(targetEntity="FreelancerTools\TimeTrackerBundle\Entity\Timeslice", mappedBy="invoice")
      * @ORM\OrderBy({"startedAt" = "DESC"})
+     * //@JMS\Expose()
      */
     protected $timeslices;
-    
+
     /**
      * @ORM\Column(name="showTimelog", type="boolean", options={"default" = 1})
+     * @JMS\Expose()
+     * @JMS\SerializedName("showTimelog")  
      */
     protected $showTimelog = false;
-    
+
     /**
      * @ORM\Column(type="boolean", options={"default" = 0})
      */
     //protected $isRecurring = false;
-    
-   /**
+
+    /**
      * 
      * @ORM\Column(type="datetime")
      */
@@ -103,13 +116,49 @@ class Invoice extends Entity {
         $this->items = new ArrayCollection();
         $this->timeslices = new ArrayCollection();
     }
-    
-    public function getDaysUntilDue() {
-        $now = new \DateTime("today midnight");      
-        
-        return ($this->getInvoiceDueDate()->getTimestamp() - $now->getTimestamp()) / 86400;
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("client_id")    
+     */
+    public function apiCustomerId() {
+        if ($this->getCustomer()) {
+            return $this->getCustomer()->getId();
+        }
     }
     
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("currency_id")    
+     */
+    public function apiCurrencyId() {
+        if ($this->getCurrency()) {
+            return $this->getCurrency()->getId();
+        }
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("invoiceDate")    
+     */
+    public function apiInvoiceDate() {
+        return $this->invoiceDate->format('Y-m-d');
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("invoiceDueDate")    
+     */
+    public function apiInvoiceDueDate() {
+        return $this->invoiceDueDate->format('Y-m-d');
+    }
+
+    public function getDaysUntilDue() {
+        $now = new \DateTime("today midnight");
+
+        return ($this->getInvoiceDueDate()->getTimestamp() - $now->getTimestamp()) / 86400;
+    }
+
     public function setShowTimelog($showTimelog) {
         $this->showTimelog = $showTimelog;
 
@@ -131,11 +180,11 @@ class Invoice extends Entity {
         }
         return $total;
     }
-    
+
     public function getPaid() {
         $paid = 0;
         foreach ($this->payments as $payment) {
-            $paid += $payment->getAmount(); 
+            $paid += $payment->getAmount();
         }
         return $paid;
     }
@@ -145,6 +194,11 @@ class Invoice extends Entity {
         return round($this->getTotal() - $this->getPaid(), 2);
     }
 
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("statusString")
+     * 
+     */
     public function getStatusString() {
 
         $statusCodes = array(
@@ -374,7 +428,7 @@ class Invoice extends Entity {
     public function getToken() {
         return $this->token;
     }
-    
+
     public function setTerms($terms) {
         $this->terms = $terms;
 
@@ -384,7 +438,7 @@ class Invoice extends Entity {
     public function getTerms() {
         return $this->terms;
     }
-    
+
     /**
      * Get time slices
      *
@@ -392,7 +446,7 @@ class Invoice extends Entity {
      */
     public function getTimeslices() {
         return $this->timeslices;
-    }   
+    }
 
     /**
      * Set currency
@@ -400,8 +454,7 @@ class Invoice extends Entity {
      * @param \FreelancerTools\PaymentBundle\Entity\Currency $currency
      * @return Invoice
      */
-    public function setCurrency(\FreelancerTools\PaymentBundle\Entity\Currency $currency)
-    {
+    public function setCurrency(\FreelancerTools\PaymentBundle\Entity\Currency $currency) {
         $this->currency = $currency;
 
         return $this;
@@ -412,8 +465,7 @@ class Invoice extends Entity {
      *
      * @return \FreelancerTools\PaymentBundle\Entity\Currency 
      */
-    public function getCurrency()
-    {
+    public function getCurrency() {
         return $this->currency;
     }
 
@@ -423,8 +475,7 @@ class Invoice extends Entity {
      * @param \FreelancerTools\TimeTrackerBundle\Entity\Timeslice $timeslices
      * @return Invoice
      */
-    public function addTimeslice(\FreelancerTools\TimeTrackerBundle\Entity\Timeslice $timeslices)
-    {
+    public function addTimeslice(\FreelancerTools\TimeTrackerBundle\Entity\Timeslice $timeslices) {
         $this->timeslices[] = $timeslices;
 
         return $this;
@@ -435,8 +486,8 @@ class Invoice extends Entity {
      *
      * @param \FreelancerTools\TimeTrackerBundle\Entity\Timeslice $timeslices
      */
-    public function removeTimeslice(\FreelancerTools\TimeTrackerBundle\Entity\Timeslice $timeslices)
-    {
+    public function removeTimeslice(\FreelancerTools\TimeTrackerBundle\Entity\Timeslice $timeslices) {
         $this->timeslices->removeElement($timeslices);
-    }    
+    }
+
 }

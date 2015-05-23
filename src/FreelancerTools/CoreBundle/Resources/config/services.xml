@@ -30,6 +30,9 @@
             <argument type="service" id="ft.email_token_transformer" /> 
             <argument type="service" id="twig" />                             
         </service>
+        <service id="ft.pdf" class="FreelancerTools\CoreBundle\Services\PDFCreator">            
+            <argument type="service" id="templating" />                                    
+        </service>
         <service id="user.setter.listener" class="FreelancerTools\CoreBundle\EventListener\UserSetter">
             <tag name="doctrine.event_listener" event="prePersist" />
             <argument type="service" id="service_container" />

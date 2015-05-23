@@ -1,0 +1,43 @@
+<div class="box">
+    <div class="title">
+        <div class="clearfix">
+            <div class="pull-left">
+                Edit Timeslice   
+            </div>            
+        </div>
+    </div>
+    <div class="content">
+
+        <form name="editSliceForm" class="form-horizontal" novalidate> 
+
+            <div class="form-group" ng-class="{'has-error':editSliceForm.startedAt.$dirty && editSliceForm.startedAt.$invalid}">
+                <label class="control-label col-lg-2" for="startedAt">Started At</label>
+                <div class="col-lg-10">
+                    <input data-date-picker=""  id="startedAt" name="startedAt" ng-model="modal.timeslice.startedAt" ng-change="update()" ng-blur="blurUpdate()" type="text" required="required" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':editSliceForm.stoppedAt.$dirty && editSliceForm.stoppedAt.$invalid}">
+                <label class="control-label col-lg-2" for="stoppedAt">Stopped At</label>
+                <div class="col-lg-10">
+                    <input data-date-picker="" id="stoppedAt" name="stoppedAt" ng-model="modal.timeslice.stoppedAt" ng-change="update()" ng-blur="blurUpdate()" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':editSliceForm.notes.$dirty && editSliceForm.notes.$invalid}">
+                <label class="control-label col-lg-2" for="notes">Notes</label>
+                <div class="col-lg-10">
+                    <textarea id="notes" name="notes" ng-model="modal.timeslice.notes" ng-change="update()" ng-blur="blurUpdate()" type="text" class="form-control"></textarea>
+                </div>
+            </div>
+
+        </form>        
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="editSliceForm.$invalid" ng-click="modal.ok()"><span class="glyphicon glyphicon-floppy-disk"> Save</span></button>
+    <button class="btn btn-warning" ng-click="modal.cancel()">Cancel</button>
+</div>
+
+

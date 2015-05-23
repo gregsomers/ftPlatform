@@ -1,0 +1,47 @@
+<div class="box">
+    <div class="title">
+        <div class="clearfix">
+            <div class="pull-left">
+                Email Templates 
+            </div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button ng-disabled="templatesForm.$invalid" ng-click="vm.save()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-disk"> Save</span></button>                                        
+                </div>
+            </div>   
+        </div>        
+    </div>
+    <div class="content clearfix">
+        <form class="form-horizontal" name="templatesForm" novalidate > 
+
+            <div class="form-group">
+                <label class="control-label col-lg-2 required">Invoice Iotification</label>
+                <div class="col-lg-10">
+                    <textarea data-ft-ckeditor id="invoice_notification" required="required" type="text" name="invoice_notification" class="form-control" ng-model="vm.templates.invoice_notification.body"></textarea>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-lg-2 required">Payment Overdue Notification</label>
+                <div class="col-lg-10">
+                    <textarea data-ft-ckeditor id="payment_overdue_notification" required="required" type="text" name="payment_overdue_notification" class="form-control" ng-model="vm.templates.payment_overdue_notification.body"></textarea>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-lg-2 required">Payment Notification</label>
+                <div class="col-lg-10">
+                    <textarea data-ft-ckeditor id="payment_notification" required="required" type="text" name="payment_notification" class="form-control" ng-model="vm.templates.payment_notification.body"></textarea>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-lg-2 required">Invoice Reminder Notification</label>
+                <div class="col-lg-10">
+                    <textarea data-ft-ckeditor id="invoice_reminder_notification" required="required" type="text" name="invoice_reminder_notification" class="form-control" ng-model="vm.templates.invoice_reminder_notification.body"></textarea>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

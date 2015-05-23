@@ -1,0 +1,53 @@
+<div class="box">
+    <div class="title">
+        <div class="clearfix">
+            <div class="pull-left">
+                Edit Timeslice   
+            </div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button ng-click="vm.back()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> Back to List</button>
+                </div>
+            </div>   
+        </div>
+
+    </div>
+    <div class="content">
+
+        <form name="editSliceForm" class="form-horizontal" novalidate> 
+
+            <div class="form-group" ng-class="{'has-error':editSliceForm.startedAt.$dirty && editSliceForm.startedAt.$invalid}">
+                <label class="control-label col-lg-2" for="startedAt">Started At</label>
+                <div class="col-lg-10">
+                    <input data-date-picker=""  id="startedAt" name="startedAt" ng-model="vm.slice.startedAt" ng-change="update()" ng-blur="blurUpdate()" type="text" required="required" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':editSliceForm.stoppedAt.$dirty && editSliceForm.stoppedAt.$invalid}">
+                <label class="control-label col-lg-2" for="stoppedAt">Stopped At</label>
+                <div class="col-lg-10">
+                    <input data-date-picker="" id="stoppedAt" name="stoppedAt" ng-model="vm.slice.stoppedAt" ng-change="update()" ng-blur="blurUpdate()" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group" ng-class="{'has-error':editSliceForm.notes.$dirty && editSliceForm.notes.$invalid}">
+                <label class="control-label col-lg-2" for="notes">Notes</label>
+                <div class="col-lg-10">
+                    <textarea id="notes" name="notes" ng-model="vm.slice.notes" ng-change="update()" ng-blur="blurUpdate()" type="text" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-sm-offset-2 col-sm-10"> 
+                        <button ng-disabled="editSliceForm.$invalid" ng-click="vm.save()" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"> Save</span></button>                        
+                    </div>
+                </div>
+            </div>
+
+
+        </form>        
+    </div>
+</div>
+
+

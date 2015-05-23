@@ -8,20 +8,16 @@
     <div id="login-page">
         <div class="container">        
             <form id="login-form" class="form-signin" action="{{ path("fos_user_security_check") }}" role="form" method="post">
-                <div class="title-box">
-                    <h2 class="title">Login</h2>
-                </div>
+                
                 <fieldset>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
                     <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon">Username</div>
+                        <div class="">
                             <input type="text" class="form-control" id="username" name="_username" required="required" value="{{ last_username }}" placeholder="Username">                        
                         </div>                    
                     </div>
                     <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon">Password</div>                        
+                        <div class="">
                             <input placeholder="Password" type="password" id="csibio_userbundle_password" name="_password" required="required" class="input-md form-control">
 
                         </div>

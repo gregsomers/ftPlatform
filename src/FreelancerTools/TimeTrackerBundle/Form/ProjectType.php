@@ -34,7 +34,7 @@ class ProjectType extends AbstractType {
 
         $builder
                 ->add('name')
-                ->add('alias')
+                //->add('alias')
                 ->add('customer', null, array('required' => true))
                 ->add('startedAt', 'datetime', array(
                     'required' => false,

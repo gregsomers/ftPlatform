@@ -5,10 +5,13 @@ namespace FreelancerTools\PaymentBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FreelancerTools\CoreBundle\Entity\Entity;
 use \DateTime;
+use JMS\Serializer\Annotation as JMS;
+
 
 /** 
  * @ORM\Table(name="payments")
  * @ORM\Entity(repositoryClass="FreelancerTools\PaymentBundle\Entity\PaymentRepository")
+ * @JMS\ExclusionPolicy("all")
  */
 class Payment extends Entity {
     
@@ -23,28 +26,33 @@ class Payment extends Entity {
      * 
      * @ORM\ManyToOne(targetEntity="PaymentMethod")
      * @ORM\JoinColumn(name="method_id", referencedColumnName="id", nullable=false)
+     * @JMS\Expose()
      */
     protected $method;
     
     /**
      * 
      * @ORM\Column(name="date", type="datetime")
+     * @JMS\Expose()
      */
     protected $date;
     
     /**    
      * @ORM\Column(type="decimal", scale=2, precision=10, nullable=true)
+     * @JMS\Expose()
      */
     protected $amount;
     
     /**
      * 
      * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
      */
     protected $notes;
     
     /**
-     * @ORM\OneToOne(targetEntity="FreelancerTools\PaymentBundle\Entity\Order", mappedBy="payment", cascade="persist")     
+     * @ORM\OneToOne(targetEntity="FreelancerTools\PaymentBundle\Entity\Order", mappedBy="payment", cascade="persist")
+     * //@JMS\Expose()     
      */
     protected $order;   
     
@@ -54,6 +62,14 @@ class Payment extends Entity {
      */
     public function __construct() {
         
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("invoice_id")
+     */
+    public function getStringId() {        
+        return $this->getInvoice()->getId();
     }
 
     /**

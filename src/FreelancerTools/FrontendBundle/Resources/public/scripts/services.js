@@ -1,111 +1,54 @@
 angular.module('ftApp')
+        .factory('$global', ['DS', '$q', function (DS, $q) {
+                var _this = this;
+                var _activeTimeSliceId = null;
 
-        .factory('Client', function ($http) {
-            var clients = [];
-            var fetchedFromServer = false;
-            var self = this;
-            var dataDirty = false;
+                //grab the pre-loaded data from the global var               
+                DS.inject('settings', window.ftAppInitData['settings']);
+                DS.inject('users', window.ftAppInitData['user']);
+                if (window.ftAppInitData['activeSlice']) {
+                    _this._activeTimeSliceId = window.ftAppInitData['activeSlice'].id;
+                    DS.inject('timeslices', window.ftAppInitData['activeSlice']);
+                }
+                DS.inject('paymentmethods', window.ftAppInitData['paymentMethods']);
+                DS.inject('currencies', window.ftAppInitData['currencies']);
 
-            return {
-                loadAll: function () {
-                    return $http.get('http://time-dev.gregsomers.com/customers/api');
-                },
-                get: function () {
-                    if (fetchedFromServer === false) {
-                        console.log("requesting client data");
-                        this.loadAll().
-                                success(function (data) {
-                                    // this callback will be called asynchronously
-                                    // when the response is available
-                                    angular.forEach(data, function (value, key) {
-                                        clients.push(value);
-                                        //console.log("Value %o",value);
-                                    });
-                                    fetchedFromServer = true;
-                                }).
-                                error(function (data) {
-                                    // called asynchronously if an error occurs
-                                    // or server returns response with an error status.
-                                });
-                    }
-                    return clients;
-                },
-                getById: function (id) {
-                    return $http.get('http://time-dev.gregsomers.com/customers/api/' + id);
-                },
-                save: function () {
-                    console.log("saved");
-                },
-                insert: function (client) {
-
-                    $http.post('http://time-dev.gregsomers.com/customers/api', client);
-
-                    clients.push(client);
-                },
-                remove: function (id) {
-                    $http.delete('http://time-dev.gregsomers.com/customers/api/' + id).success(function () {
-                        angular.forEach(clients, function (value, key) {
-                            if (value.id == id) {  //cant use === id might not be sent from server as int                 
-                                clients.splice(key, 1);
-                            }
-                        });
-                    });
-                },
-                update: function (id, client) {
-                    /*
-                     var object = $.grep(clients, function (e) {
-                     return e.id == id;
-                     })[0];*/
-
-                    angular.forEach(clients, function (value, key) {
-                        if (value.id == id) {  //cant use === id might not be sent from server as int                 
-                            clients.splice(key, 1);
-                            clients.push(client);
-                            return $http.post('http://time-dev.gregsomers.com/customers/api/' + client.id, client);
+                return {
+                    getActiveSliceId: function () {
+                        return _this._activeTimeSliceId;
+                    },
+                    getActiveSlice: function () {
+                        if (_this._activeTimeSliceId) {
+                            return DS.get('timeslices', _this._activeTimeSliceId);
                         }
-                    });
-
-
-                }
-            };
-        })
-
-
-        .factory('Project', function ($http) {
-            var projects = [];
-            var fetchedFromServer = false;
-            var self = this;
-            var dataDirty = false;
-
-            return {
-                loadAll: function () {
-                    return $http.get('http://time-dev.gregsomers.com/projects/api');
-                },
-                get: function () {
-                    if (fetchedFromServer === false) {
-                        console.log("requesting  data");
-                        this.loadAll().
-                                success(function (data) {
-                                    // this callback will be called asynchronously
-                                    // when the response is available
-                                    angular.forEach(data, function (value, key) {
-                                        projects.push(value);
-                                        //console.log("Value %o",value);
-                                    });
-                                    fetchedFromServer = true;
-                                }).
-                                error(function (data) {
-                                    // called asynchronously if an error occurs
-                                    // or server returns response with an error status.
-                                });
+                        return {};
+                    },
+                    setActiveSliceId: function (id) {
+                        _this._activeTimeSliceId = id;
+                        return _this._activeTimeSliceId;
+                    },
+                    clearActiveSlice: function () {
+                        _this._activeTimeSliceId = null;
+                    },
+                    getAppSetting: function (name) {
+                        return DS.get('settings', name);
+                    },
+                    getCurrentUser: function (name) {
+                        return DS.getAll('users')[0];
+                    },
+                    //helper methods
+                    arrayRemoveElm: function (array, elm) {
+                        if (Array.isArray(array)) {
+                            var idx = array.indexOf(elm);
+                            if (idx !== -1) {
+                                array.splice(idx, 1);
+                            }
+                        }
                     }
-                    return projects;
-                },
-                getById: function(id) {
-                    return $http.get('http://time-dev.gregsomers.com/projects/api/' + id);
-                }
-            }
-        })
+                };
+            }])
+
+
 
 
         ;

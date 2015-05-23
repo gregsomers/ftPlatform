@@ -2,11 +2,11 @@
 
 namespace FreelancerTools\PaymentBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
+use FreelancerTools\CoreBundle\Entity\EntityRepository as Base;
 use Doctrine\ORM\NoResultException;
 use FreelancerTools\CoreBundle\Entity\User;
 
-class PaymentRepository extends EntityRepository {
+class PaymentRepository extends Base {
     
     public function getPaymentsByYear(User $user, $year = null) {
         if(!$year) {

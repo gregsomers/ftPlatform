@@ -42,6 +42,7 @@ abstract class Entity {
      * @Gedmo\Timestampable(on="create")
      * @JMS\SerializedName("createdAt")
      * @ORM\Column(name="created_at", type="datetime")
+     * @JMS\Expose()
      */
     protected $createdAt;
 

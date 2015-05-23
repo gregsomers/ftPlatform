@@ -20,6 +20,14 @@ class DashboardController extends Controller {
      * @Template()
      */
     public function indexAction() {
+
+        $url = $this->generateUrl("angular");
+        return $this->redirect(
+                        sprintf('%s#%s', $url, 'dashboard')
+        );
+
+        return $this->redirect($this->generateUrl('angular'));
+
         $customers = $this->getCustomerRepository()->findAll();
         $payments = $this->getPaymentsStorage()->getRepo()->getPaymentsByYear($this->getUser());
 
@@ -72,10 +80,10 @@ class DashboardController extends Controller {
     protected function getCustomerRepository() {
         return $this->getDoctrine()->getRepository('FreelancerToolsCoreBundle:Customer');
     }
-    
+
     protected function getTimesliceStorage() {
         return $this->get('ft.storage')->getStorage('FreelancerTools\TimeTrackerBundle\Entity\Timeslice');
-    }  
+    }
 
     protected function getPaymentsStorage() {
         return $this->get('ft.storage')->getStorage('FreelancerTools\PaymentBundle\Entity\Payment');

@@ -25,7 +25,7 @@ class Timeslice extends Entity
      * @Assert\NotNull()
      * @ORM\ManyToOne(targetEntity="Activity", inversedBy="timeslices", cascade="persist")
      * @ORM\JoinColumn(name="activity_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     * @JMS\Expose()
+     * //@JMS\Expose()
      */
     protected $activity;
 
@@ -45,6 +45,7 @@ class Timeslice extends Entity
      * @JMS\SerializedName("startedAt")
      * @ORM\Column(name="started_at", type="datetime", nullable=true)
      * @JMS\Expose()
+     * //@JMS\Type("DateTime<'m/d/Y h:m:s a'>")
      */
     protected $startedAt;
 
@@ -55,6 +56,7 @@ class Timeslice extends Entity
      * @JMS\SerializedName("stoppedAt")
      * @ORM\Column(name="stopped_at", type="datetime", nullable=true)
      * @JMS\Expose()
+     * //@JMS\Type("DateTime<'m/d/Y h:m:s a'>")
      */
     protected $stoppedAt;
     
@@ -104,6 +106,39 @@ class Timeslice extends Entity
     {
         $this->tags = new ArrayCollection();
     }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("activity_id")
+     * 
+     */
+    public function getActivityId() {   
+        return $this->getActivity()->getId();
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("invoiceItem_id")
+     * 
+     */
+    public function getInvoiceItemId() { 
+        if($this->getInvoiceItem()) {
+            return $this->getInvoiceItem()->getId();
+        }
+    }
+    
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("project_id")
+     * 
+     */
+    public function getProjectId() {  
+        if($this->getActivity()->getProject()) {
+            return $this->getActivity()->getProject()->getId();
+        }
+    }
+    
+    
 
     /**
      * Set activity

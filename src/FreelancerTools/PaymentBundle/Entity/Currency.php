@@ -7,7 +7,7 @@ use FreelancerTools\CoreBundle\Entity\Entity;
 
 /** 
  * @ORM\Table(name="payment_currency")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="FreelancerTools\PaymentBundle\Entity\CurrencyRepository")
  */
 class Currency extends Entity {      
     

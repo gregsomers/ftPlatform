@@ -14,8 +14,9 @@
                 'css/bootstrap/bootstrap.css'
                 'css/bootstrap/bootstrap_form_2.css'
                 'css/datetimepicker.css'
-                'css/app/core-styles.css'
+                '../app/Resources/less/styles.less'
                 'css/app/tt-styles.css'
+                'bundles/bmatznerfontawesome/css/font-awesome.min.css'
                 filter='cssrewrite,lessphp' %}
             <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
@@ -28,7 +29,7 @@
 
             <div class="navbar-static-side">
                 <sidebar>
-                    {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
+                    {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu', {'allow_safe_labels': true }) }}
                 </sidebar>
             </div>
 
