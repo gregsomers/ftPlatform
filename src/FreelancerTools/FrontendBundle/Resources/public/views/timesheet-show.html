@@ -75,7 +75,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="slice in vm.project.timeslices| orderBy: 'startedAt' : true">
+                        <tr ng-repeat="slice in vm.project.timeslices| orderBy: 'startedAt' : true | active:!vm.showArchived">
                             <td>{{slice.startedAt|myDateFormat}}</td>
                             <td>{{slice.activity.description}}</td>
                             <td>

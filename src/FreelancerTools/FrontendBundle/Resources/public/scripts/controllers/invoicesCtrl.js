@@ -320,7 +320,7 @@
 
                     if (modal.sorting === "project") {
                         modal.project.timeslices.forEach(function (slice) {
-                            if (!slice.isBilled() &&
+                            if (!slice.isBilled() && slice.isActive() &&
                                     (moment(slice.stoppedAt).isBefore(modal.date, 'day') ||
                                             moment(slice.stoppedAt).isSame(modal.date, 'day')
                                             ))
@@ -347,31 +347,33 @@
                     } else if (modal.sorting === "activity") {
 
                         modal.project.activities.forEach(function (activity) {
-                            activity.timeslices.forEach(function (slice) {
-                                if (!slice.isBilled() &&
-                                        (moment(slice.stoppedAt).isBefore(modal.date, 'day') ||
-                                                moment(slice.stoppedAt).isSame(modal.date, 'day')
-                                                ))
-                                {
-                                    totalSeconds += slice.duration;
-                                    slice.invoiceItem = true; //placeholder until real ID is generated
-                                    modal.slices.push(slice);
-                                }
-                            });
+                            if (activity.isActive()) {
+                                activity.timeslices.forEach(function (slice) {
+                                    if (!slice.isBilled() && slice.isActive() &&
+                                            (moment(slice.stoppedAt).isBefore(modal.date, 'day') ||
+                                                    moment(slice.stoppedAt).isSame(modal.date, 'day')
+                                                    ))
+                                    {
+                                        totalSeconds += slice.duration;
+                                        slice.invoiceItem = true; //placeholder until real ID is generated
+                                        modal.slices.push(slice);
+                                    }
+                                });
 
-                            if (totalSeconds > 0) {
-                                var item = DS.createInstance('invoiceitems');
-                                item.description = activity.description;
-                                item.product = activity.description;
-                                item.quantity = Math.round((totalSeconds / 3600) * 100) / 100; //round to 2 dc places
-                                item.price = (activity.rate) ? activity.rate : modal.project.rate;
-                                item.timeslices = modal.slices;
-                                //invoice.items.push(item);
-                                modal.items.push(item);
+                                if (totalSeconds > 0) {
+                                    var item = DS.createInstance('invoiceitems');
+                                    item.description = activity.description;
+                                    item.product = activity.description;
+                                    item.quantity = Math.round((totalSeconds / 3600) * 100) / 100; //round to 2 dc places
+                                    item.price = (activity.rate) ? activity.rate : modal.project.rate;
+                                    item.timeslices = modal.slices;
+                                    //invoice.items.push(item);
+                                    modal.items.push(item);
+                                }
+                                //reset for the next activity
+                                totalSeconds = 0;
+                                modal.slices = [];
                             }
-                            //reset for the next activity
-                            totalSeconds = 0;
-                            modal.slices = [];
 
                         });
                     }

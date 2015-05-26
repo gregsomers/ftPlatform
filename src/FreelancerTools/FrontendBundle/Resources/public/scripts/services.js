@@ -1,7 +1,7 @@
 angular.module('ftApp')
         .factory('$global', ['DS', '$q', function (DS, $q) {
                 var _this = this;
-                var _activeTimeSliceId = null;
+                _this._activeTimeSliceId = null;
 
                 //grab the pre-loaded data from the global var               
                 DS.inject('settings', window.ftAppInitData['settings']);
@@ -21,7 +21,7 @@ angular.module('ftApp')
                         if (_this._activeTimeSliceId) {
                             return DS.get('timeslices', _this._activeTimeSliceId);
                         }
-                        return {};
+                        return null;
                     },
                     setActiveSliceId: function (id) {
                         _this._activeTimeSliceId = id;

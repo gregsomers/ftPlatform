@@ -109,6 +109,15 @@ class Timeslice extends Entity
     
     /**
      * @JMS\VirtualProperty
+     * @JMS\SerializedName("active")
+     * 
+     */
+    public function getAPIActive() {
+        return !$this->getActivity()->getArchived();        
+    }
+    
+    /**
+     * @JMS\VirtualProperty
      * @JMS\SerializedName("activity_id")
      * 
      */

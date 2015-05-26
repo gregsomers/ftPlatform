@@ -3,27 +3,41 @@
 
     angular.module('ftApp')
 
-            .controller('ActiveTimesliceCounterCtrl', function (DS, $location, $global) {
+            .controller('ConfirmationModalInstanceCtrl', function ($modalInstance, message) {
+                var modal = this;
+                modal.message = message;
+                modal.ok = function () {
+                    $modalInstance.close();
+                };
+
+                modal.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+                };
+            })
+
+            .controller('ActiveTimesliceCounterCtrl', function ($scope, DS, $location, $global) {
                 var vm = this;
                 vm.global = $global;
+                
+                console.log("active %o",$global.getActiveSlice());
 
                 if ($global.getActiveSliceId()) {
                     vm.activeSlice = $global.getActiveSlice();
-
                 }
-
+                
+                $scope.$watch(function () {
+                    return $global.getActiveSliceId();
+                }, function (id) {
+                    console.log('slice changes to: ', id);
+                    vm.activeSlice = $global.getActiveSlice();
+                }, false);
 
                 vm.goToTimesheet = function (id) {
                     console.log("goToTimesheet " + id);
                     $location.url('/timesheet/' + id);
                 };
-                /*
-                 vm.$watch(function () {
-                 return $global.getActiveSlice();
-                 }, function (newVal) {
-                 console.log('data changes into: ', newVal);
-                 vm.slice = newVal;
-                 }, false);     */
+
+
             })
 
             .controller('NavMenuCtrl', function ($location) {
@@ -71,7 +85,7 @@
                 };
             })
 
-            
+
 
 
             .controller('SettingsEditCtrl', function (DS, $location, ngToast, $global, $routeParams, $http) {

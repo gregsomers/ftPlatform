@@ -13,21 +13,21 @@
             <div class="form-group" ng-class="{'has-error':editSliceForm.startedAt.$dirty && editSliceForm.startedAt.$invalid}">
                 <label class="control-label col-lg-2" for="startedAt">Started At</label>
                 <div class="col-lg-10">
-                    <input data-date-picker=""  id="startedAt" name="startedAt" ng-model="modal.timeslice.startedAt" ng-change="update()" ng-blur="blurUpdate()" type="text" required="required" class="form-control"/>
+                    <input data-date-picker="" data-format="YYYY-MM-DD HH:mm:ss" id="startedAt" name="startedAt" ng-model="modal.timeslice.startedAt" type="text" required="required" class="form-control"/>
                 </div>
             </div>
 
             <div class="form-group" ng-class="{'has-error':editSliceForm.stoppedAt.$dirty && editSliceForm.stoppedAt.$invalid}">
                 <label class="control-label col-lg-2" for="stoppedAt">Stopped At</label>
                 <div class="col-lg-10">
-                    <input data-date-picker="" id="stoppedAt" name="stoppedAt" ng-model="modal.timeslice.stoppedAt" ng-change="update()" ng-blur="blurUpdate()" type="text" class="form-control"/>
+                    <input data-date-picker="" data-format="YYYY-MM-DD HH:mm:ss" id="stoppedAt" name="stoppedAt" ng-model="modal.timeslice.stoppedAt" type="text" class="form-control"/>
                 </div>
             </div>
 
             <div class="form-group" ng-class="{'has-error':editSliceForm.notes.$dirty && editSliceForm.notes.$invalid}">
                 <label class="control-label col-lg-2" for="notes">Notes</label>
                 <div class="col-lg-10">
-                    <textarea id="notes" name="notes" ng-model="modal.timeslice.notes" ng-change="update()" ng-blur="blurUpdate()" type="text" class="form-control"></textarea>
+                    <textarea id="notes" name="notes" ng-model="modal.timeslice.notes" type="text" class="form-control"></textarea>
                 </div>
             </div>
 

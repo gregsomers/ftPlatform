@@ -117,6 +117,9 @@ angular.module('ftApp')
                         } else {
                             return false;
                         }
+                    },
+                    isActive: function () {
+                        return this.active;                        
                     }
                 },
                 relations: {
@@ -140,26 +143,14 @@ angular.module('ftApp')
                         var _this = this;
                         var seconds = 0;
                         this.timeslices.forEach(function (slice) {
-                            //console.log(slice);
-                            if (!slice.isBilled()) {
+                            if (!slice.isBilled() && slice.isActive()) {
                                 seconds += slice.duration;
                             }
                         });
                         return seconds;
                     },
-                    getUnbilledValue: function () {
-                        var _this = this;
-                        var total = 0;
-                        var rate = 0;
-                        this.timeslices.forEach(function (slice) {
-                            //console.log(slice);
-                            if (!slice.isBilled()) {
-                                rate = (slice.activity.rate) ? slice.activity.rate : _this.rate;
-                                total += slice.duration / 3600 * rate;
-                            }
-                        });
-                        return total;
-                        //return this.getUnbilledTime() * this.rate / 3600;
+                    getUnbilledValue: function () {                        
+                        return this.getUnbilledTime() * this.rate / 3600;
                     },
                     getTotalTime: function () {
                         var _this = this;
@@ -180,6 +171,9 @@ angular.module('ftApp')
                         });
                         return seconds;
                     },
+                    isActive: function(){
+                        return this.active;
+                    }
                 },
                 relations: {
                     hasMany: {
@@ -212,8 +206,7 @@ angular.module('ftApp')
                     getUnbilledTime: function () {
                         var seconds = 0;
                         this.timeslices.forEach(function (slice) {
-                            //console.log(slice);
-                            if (!slice.isBilled()) {
+                            if (!slice.isBilled() && slice.isActive()) {
                                 seconds += slice.duration;
                             }
                         });
@@ -222,7 +215,6 @@ angular.module('ftApp')
                     getBilledTime: function () {
                         var seconds = 0;
                         this.timeslices.forEach(function (slice) {
-                            //console.log(slice);
                             if (slice.isBilled()) {
                                 seconds += slice.duration;
                             }
@@ -255,6 +247,9 @@ angular.module('ftApp')
                             }
                         });
                         return sliceRet;
+                    },
+                    isActive: function(){
+                        return !this.archived;
                     }
                 },
                 relations: {

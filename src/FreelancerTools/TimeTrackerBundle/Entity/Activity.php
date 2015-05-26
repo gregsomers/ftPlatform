@@ -115,7 +115,8 @@ class Activity extends Entity {
     public function getProjectId() {
         return $this->getProject()->getId();        
     }
-
+    
+    
     public function __toString() {
         return $this->customer->getName() . ": " . $this->description;
     }

@@ -24,8 +24,11 @@
                 });
                 
                 vm.projects.forEach(function (project) {
-                    vm.unbilledTime += project.getUnbilledTime();
-                    vm.valueUnbilledTime += project.getUnbilledValue();
+                    if(project.isActive()) {
+                        vm.unbilledTime += project.getUnbilledTime();
+                        vm.valueUnbilledTime += project.getUnbilledValue();
+                        //console.log("proj %o val %o",project,project.getUnbilledValue());
+                    }
                 });
 
             })

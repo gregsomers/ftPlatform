@@ -96,7 +96,7 @@
                 };
             })
 
-            .controller('TimesheetShowCtrl', function ($location, $routeParams, $filter, DS, ngToast, $modal, assetDir) {
+            .controller('TimesheetShowCtrl', function ($location, $routeParams, $filter, DS, ngToast, $modal, assetDir, $global) {
                 var vm = this;
                 vm.showArchived = false;
                 vm.project = DS.get('projects', $routeParams.id);
@@ -122,7 +122,7 @@
                             className: 'success',
                             content: 'Activity Started'
                         });
-                        //$global.setActiveSlice(slice);
+                        $global.setActiveSliceId(slice.id);
                     });
                     vm.tab[0].active = true;
                 };
@@ -132,7 +132,7 @@
                     slice.stoppedAt = d;
                     slice.DSSave().then(
                             function () {
-                                //$global.clearActiveSlice();
+                                $global.clearActiveSlice();
                                 ngToast.create({
                                     className: 'success',
                                     content: 'Timeslice Stopped'
@@ -224,6 +224,7 @@
                 
                 vm.removeSlice = function (slice) {
                     slice.DSDestroy();
+                    $global.clearActiveSlice();
                 };
                 
                 vm.removeActivity = function (activity) {
