@@ -6,8 +6,8 @@
             </div>
             <div class="pull-right">
                 <div class="btn-group">
-                    <button ng-click="vm.back()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> Back to List</button>
-                    <button ng-disabled="invoiceForm.$invalid" ng-click="vm.save()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-disk"> Save</span></button>                     
+                    <button ng-click="vm.back()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> <span class="hidden-xs">Back to List</span></button>
+                    <button ng-disabled="invoiceForm.$invalid" ng-click="vm.save()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-disk"> <span class="hidden-xs">Save</span></span></button>                     
                     <button ng-click="vm.sendEmail()" ng-disabled="!vm.invoice.id" title="Send Invoice to Customer" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-envelope"></span></button>
                     <div class="btn-group">
                         <button ng-disabled="!vm.invoice.id" type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
@@ -85,7 +85,7 @@
                         <div class="col-lg-10">
                             <select id="currency" name="currency" required="required" class="form-control" ng-model="vm.invoice.currency_id"
                                     ng-options="currency.id as currency.name for currency in vm.currencies">
-                                
+
                             </select>
                         </div>
                     </div>
@@ -101,46 +101,47 @@
                     </div>
                 </div>
             </div>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Description</th>
-                        <th>Qty</th>
-                        <th>Price</th>
-                        <th>Subtotal</th>
-                        <th>Tax Rate</th>
-                        <th>Total</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>                                
-                    <tr ng-repeat="item in vm.invoice.items">
-                        <td class="col-sm-3">    
-                            <input type="text" required="required" class="form-control" ng-model="item.product" />
-                        </td>
-                        <td class="col-sm-3">    
-                            <textarea expandable-textarea required="required" rows="1" class="form-control" ng-model="item.description"></textarea>
-                        </td>
-                        <td class="col-sm-1">    
-                            <input type="text" class="form-control" ng-model="item.quantity" required="required">
-                        </td>
-                        <td class="col-sm-1">                              
-                            <input type="text" class="form-control" ng-model="item.price" required="required">
-                        </td>
-                        <td class="col-sm-1">{{(item.quantity * item.price) | currency:"$"}}</td>
-                        <td>None</td>
-                        <td>{{(item.quantity * item.price) | currency:"$"}}</td>
-                        <td><button ng-click="vm.deleteInvoiceItem(item)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button></td>
-                    </tr>             
-                </tbody>
-            </table> 
+            <div class="no-more-tables">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                            <th>Tax Rate</th>
+                            <th>Total</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>                                
+                        <tr ng-repeat="item in vm.invoice.items">
+                            <td class="col-sm-3" data-title="Product">    
+                                <input type="text" required="required" class="form-control" ng-model="item.product" />
+                            </td>
+                            <td class="col-sm-3" data-title="Description">    
+                                <textarea expandable-textarea required="required" rows="1" class="form-control" ng-model="item.description"></textarea>
+                            </td>
+                            <td class="col-sm-1" data-title="Qty">    
+                                <input type="text" class="form-control" ng-model="item.quantity" required="required">
+                            </td>
+                            <td class="col-sm-1" data-title="Price">                              
+                                <input type="text" class="form-control" ng-model="item.price" required="required">
+                            </td>
+                            <td class="col-sm-1" data-title="Subtotal">{{(item.quantity * item.price) | currency:"$"}}</td>
+                            <td data-title="Tax Rate">None</td>
+                            <td data-title="Total">{{(item.quantity * item.price) | currency:"$"}}</td>
+                            <td data-title="&nbsp;"><button ng-click="vm.deleteInvoiceItem(item)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button></td>
+                        </tr>             
+                    </tbody>
+                </table> 
+            </div>
 
             <div class="well">
                 <button ng-click="vm.addInvoiceItem()" class="unstyled"><span class="glyphicon glyphicon-plus"></span> Add an Item</button><br/>
                 <button ng-show="vm.unbilledProjects.length > 0" ng-click="vm.addUnbilledProjects()" class="unstyled"><span class="glyphicon glyphicon-plus"></span> {{vm.unbilledProjects.length}} unbilled project(s) available to add</button><br/>
-                
+
             </div>
 
             <div class="clearfix">
@@ -179,7 +180,7 @@
             </div>
 
             <div ng-show="vm.invoice.id">
-            Guest URL: <a href="{{vm.invoice.getGuestURL()}}">{{vm.invoice.getGuestURL()}}</a>   
+                Guest URL: <a href="{{vm.invoice.getGuestURL()}}">{{vm.invoice.getGuestURL()}}</a>   
             </div>
 
         </form>

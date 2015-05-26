@@ -8,7 +8,7 @@
             </div>   
         </div>
     </div>
-    <div class="content">
+    <div class="content no-more-tables">
         <input type="search" placeholder="Search" class="form-control" ng-model="queryFilter"/>
         <table class="table table-hover">
             <thead>
@@ -36,19 +36,19 @@
             <tbody>
                 <!-- -->
                 <tr ng-click="vm.edit(invoice.id)" ng-repeat="invoice in vm.invoices| filter:({'invoice_number':queryFilter}||{'client.name':queryFilter}) | orderBy: vm.sort.field : vm.sort.order">
-                    <td>
+                    <td data-title="Status">
                         <span ng-show="invoice.status == 0" class="label label-default">{{invoice.statusString}}</span> 
                         <span ng-show="invoice.status == 1" class="label label-primary">{{invoice.statusString}}</span>  
                         <span ng-show="invoice.status == 2" class="label label-success">{{invoice.statusString}}</span> 
                         <span ng-show="invoice.status == 3" class="label label-danger">{{invoice.statusString}}</span>
                     </td>
-                    <td>{{invoice.invoiceNumber}}</td>
-                    <td>{{invoice.invoiceDate|myDateFormat}}</td>
-                    <td>{{invoice.invoiceDueDate|myDateFormat}}</td>
-                    <td>{{invoice.client.name}}</td>
-                    <td>{{invoice.getTotal() | currency:"$"}}</td>
-                    <td>{{invoice.getBalance() | currency:"$"}}</td>
-                    <td>
+                    <td data-title="Invoice">{{invoice.invoiceNumber}}</td>
+                    <td data-title="Invoice Date">{{invoice.invoiceDate|myDateFormat}}</td>
+                    <td data-title="Due Date">{{invoice.invoiceDueDate|myDateFormat}}</td>
+                    <td data-title="Client">{{invoice.client.name}}</td>
+                    <td data-title="Total">{{invoice.getTotal() | currency:"$"}}</td>
+                    <td data-title="Balance">{{invoice.getBalance() | currency:"$"}}</td>
+                    <td data-title="&nbsp;">
                         <div class="btn-group">
                             <button ng-click="vm.edit(invoice.id); $event.stopPropagation();" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
                             <button ng-click="vm.delete(invoice); $event.stopPropagation();" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>

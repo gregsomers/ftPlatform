@@ -50,7 +50,7 @@
                     require: '?ngModel',
                     link: function (scope, element, attrs, ngModel) {
                         var editor, updateModel;
-
+                        CKEDITOR.env.isCompatible = true;
                         if (CKEDITOR.instances[attrs.id]) {
                             delete CKEDITOR.instances[attrs.id];
                         }

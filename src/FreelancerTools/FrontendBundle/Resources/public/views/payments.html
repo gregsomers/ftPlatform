@@ -4,7 +4,7 @@
             <div class="pull-left">Payments</div>            
         </div>
     </div>
-    <div class="content">
+    <div class="content no-more-tables">
         <input type="search" placeholder="Search" class="form-control" ng-model="queryFilter"/>
         <table class="table table-hover">
             <thead>
@@ -22,12 +22,12 @@
             <tbody>
                 <!-- -->
                 <tr ng-click="vm.edit(payment)" ng-repeat="payment in vm.payments | filter:queryFilter | orderBy: vm.sort.field : vm.sort.order">
-                    <td>{{payment.date|myDateFormat}}</td>
-                    <td>{{payment.invoice.invoiceNumber}}</td>
-                    <td>{{payment.invoice.client.name}}</td>                    
-                    <td>{{payment.amount | currency:"$"}}</td>
-                    <td>{{payment.method.name}}</td>
-                    <td>
+                    <td data-title="Payment Date">{{payment.date|myDateFormat}}</td>
+                    <td data-title="Invoice">{{payment.invoice.invoiceNumber}}</td>
+                    <td data-title="Client">{{payment.invoice.client.name}}</td>                    
+                    <td data-title="Amount">{{payment.amount | currency:"$"}}</td>
+                    <td data-title="Method">{{payment.method.name}}</td>
+                    <td data-title="&nbsp;">
                         <div class="btn-group">
                             <button ng-click="vm.edit(payment); $event.stopPropagation();" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
                             <button ng-really-type="delete" ng-really-click="vm.remove(payment);" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>

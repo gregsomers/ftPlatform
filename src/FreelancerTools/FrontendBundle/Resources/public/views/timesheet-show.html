@@ -4,10 +4,10 @@
             <div class="pull-left">{{vm.project.name}} Timesheet </div>
             <div class="pull-right">
                 <div class="btn-group">
-                    <button ng-click="vm.back()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> Back to List</button>
-                    <button ng-click="vm.toggleActive()" class="btn btn-sm btn-default">Toggle Active</button>
-                    <button ng-click="vm.edit()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> Edit Project</button>
-                    <button ng-click="vm.addActivity()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> Add Activity</button>
+                    <button ng-click="vm.back()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> <span class="hidden-xs">Back to List</span></button>
+                    <button ng-click="vm.toggleActive()" class="btn btn-sm btn-default"> Toggle Active</button>
+                    <button ng-click="vm.edit()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-xs">Edit Project</span></button>
+                    <button ng-click="vm.addActivity()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> <span class="hidden-xs">Add Activity</span></button>
                 </div>
             </div>   
         </div>
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <tabset>
+        <tabset class="no-more-tables">
             <tab active="vm.tab[0].active" heading="Activities">
                 <table class="table">
                     <thead>
@@ -45,11 +45,11 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="activity in vm.project.activities| orderBy: 'createdAt' : true | archived:vm.showArchived">
-                            <td>{{activity.description}} <span ng-show="activity.getRunningTimeslice()" class="label label-primary">In Progress</span></td>                            
-                            <td>{{activity.getTotalTime() | secondsToDateFormat}}</td>
-                            <td>{{activity.getBilledTime() | secondsToDateFormat}}</td>
-                            <td>{{activity.getUnbilledTime() | secondsToDateFormat}}</td>
-                            <td>
+                            <td data-title="Name">{{activity.description}} <span ng-show="activity.getRunningTimeslice()" class="label label-primary">In Progress</span></td>                            
+                            <td data-title="Total Hours">{{activity.getTotalTime() | secondsToDateFormat}}</td>
+                            <td data-title="Billed Hours">{{activity.getBilledTime() | secondsToDateFormat}}</td>
+                            <td data-title="Unbilled Hours">{{activity.getUnbilledTime() | secondsToDateFormat}}</td>
+                            <td data-title="&nbsp;">
                                 <div class="btn-group">
                                     <button ng-disabled="activity.archived" ng-show="!activity.getRunningTimeslice()" ng-click="vm.start(activity)" class="btn btn-sm btn-success tt-timer-start" title="Start"><span class="glyphicon glyphicon-play"></span></button>
                                     <button ng-show="activity.getRunningTimeslice()" ng-click="vm.stop(activity.getRunningTimeslice())" class="btn btn-sm btn-danger tt-timer-stop" title="Stop"><span class="glyphicon glyphicon-stop"></span></button>
@@ -76,17 +76,17 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="slice in vm.project.timeslices| orderBy: 'startedAt' : true | active:!vm.showArchived">
-                            <td>{{slice.startedAt|myDateFormat}}</td>
-                            <td>{{slice.activity.description}}</td>
-                            <td>
+                            <td data-title="Date">{{slice.startedAt|myDateFormat}}</td>
+                            <td data-title="Activity">{{slice.activity.description}}</td>
+                            <td data-title="Time">
                                 {{slice.duration|secondsToDateFormat}}
                             </td>                            
-                            <td>
+                            <td data-title="Status">
                                 <span ng-show="!slice.isBilled() && slice.stoppedAt" class="label label-default">Not Invoiced</span>
                                 <span ng-show="slice.isBilled()" class="label label-success">Invoiced</span> 
                                 <span ng-show="!slice.stoppedAt" class="label label-primary">In Progress</span> 
                             </td>
-                            <td>
+                            <td data-title="&nbsp;">
                                 <div class="btn-group">
                                     <button ng-click="vm.stop(slice)" ng-show="!slice.stoppedAt" class="btn btn-sm btn-danger tt-timer-stop" title="Stop"><span class="glyphicon glyphicon-stop"></span></button>
                                     <button ng-click="vm.editTimeslice(slice)" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>                 

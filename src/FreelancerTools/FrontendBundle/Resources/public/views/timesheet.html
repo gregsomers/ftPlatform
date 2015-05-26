@@ -5,12 +5,12 @@
             <div class="pull-right">
                 <div class="btn-group">
                     <button ng-click="vm.toggleActive()" class="btn btn-default">Toggle Active</button>
-                    <button ng-click="vm.create()" class="btn btn-default" title="New Customer"><span class="glyphicon glyphicon-plus"></span> New</button>
+                    <button ng-click="vm.create()" class="btn btn-default" title="New Customer"><span class="glyphicon glyphicon-plus"></span> <span class="hidden-xs">New</span></button>
                 </div>
             </div>   
         </div>
     </div>
-    <div class="content">
+    <div class="content no-more-tables">
 
         <input type="search" placeholder="Search" class="form-control" ng-model="queryFilter"/>
         <table class="table table-hover">
@@ -33,9 +33,9 @@
             </thead>
             <tbody>
                 <tr ng-click="vm.show(project.id)" ng-repeat="project in vm.projects| filter:({'name':queryFilter}||{'client.name':queryFilter}) | orderBy: vm.sort.field : vm.sort.order | active:vm.showActive">
-                    <td>{{project.name}}</td>
-                    <td>{{project.client.name}}</td>
-                    <td>
+                    <td data-title="Project">{{project.name}}</td>
+                    <td data-title="Client">{{project.client.name}}</td>
+                    <td data-title="&nbsp;">
                         <div class="btn-group">
                             <button ng-click="vm.show(project.id); $event.stopPropagation();" class="btn btn-default btn-sm" title="Timeslices"><span class="glyphicon glyphicon-time"></span></button>
                             <button ng-click="vm.edit(project); $event.stopPropagation();" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>                 

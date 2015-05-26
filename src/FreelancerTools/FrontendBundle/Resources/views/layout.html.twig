@@ -79,22 +79,22 @@
         <sidebar ng-controller="NavMenuCtrl as vm">
             <ul class="nav">
                 <li ng-class="{ current: vm.isActive('/dashboard')}" class="first">       
-                    <a href="#/dashboard"><span class="fa fa-tachometer"></span> <span class="text">Dashboard</span></a>        
+                    <a href="#/dashboard"><span class="fa fa-tachometer"></span> <span class="hidden-xs">Dashboard</span></a>        
                 </li>
                 <li ng-class="{ current: vm.isActive('/clients')}">        
-                    <a href="#/clients"><span class="fa fa-user"></span> <span class="text">Clients</span></a>        
+                    <a href="#/clients"><span class="fa fa-user"></span> <span class="hidden-xs">Clients</span></a>        
                 </li>
                 <li ng-class="{ current: vm.isActive('/invoices')}">        
-                    <a href="#/invoices"><span class="fa fa-file-text-o"></span> <span class="text">Invoices</span></a>
+                    <a href="#/invoices"><span class="fa fa-file-text-o"></span> <span class="hidden-xs">Invoices</span></a>
                 </li>
                 <li ng-class="{ current: vm.isActive('/payments')}">        
-                    <a href="#/payments"><span class="fa fa-usd"></span> <span class="text">Payments</span></a>        
+                    <a href="#/payments"><span class="fa fa-usd"></span> <span class="hidden-xs">Payments</span></a>        
                 </li>
                 <li ng-class="{ current: vm.isActive('/timesheet')}" id="nav-timesheet">        
-                    <a href="#/timesheet"><span class="fa fa-clock-o"></span> <span class="text">Timesheet</span></a>
+                    <a href="#/timesheet"><span class="fa fa-clock-o"></span> <span class="hidden-xs">Timesheet</span></a>
                 </li>
                 <li class="last">        
-                    <a href="#/report"><span class="fa fa-bar-chart"></span> <span class="text">Reports</span></a>        
+                    <a href="#/report"><span class="fa fa-bar-chart"></span> <span class="hidden-xs">Reports</span></a>        
                 </li>
             </ul>
             {% verbatim %}
