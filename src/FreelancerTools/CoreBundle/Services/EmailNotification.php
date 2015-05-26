@@ -26,11 +26,12 @@ class EmailNotification {
     }
 
     public function send($data, $object, $templateName, $attachedFile = null) {
+        $to = (is_array($data['to'])) ? $data['to'] : explode(';', $data['to']);
 
         $message = \Swift_Message::newInstance()
                 ->setSubject($data['subject'])
                 ->setFrom($data['from'])
-                ->setTo($data['to'])
+                ->setTo($to)
                 ->setCharset('UTF-8')
                 ->setContentType('text/html');
         if ($templateName) {
@@ -47,10 +48,12 @@ class EmailNotification {
             $message->attach(\Swift_Attachment::fromPath($attachedFile));
         }
         if (isset($data['cc'])) {
-            $message->setCc($data['cc']);
+            $cc = (is_array($data['cc'])) ? $data['cc'] : explode(';', $data['cc']);
+            $message->setCc($cc);
         } 
         if (isset($data['bcc'])) {
-            $message->setBcc($data['bcc']);
+            $bcc = (is_array($data['bcc'])) ? $data['bcc'] : explode(';', $data['bcc']);
+            $message->setBcc($bcc);
         }
 
         $mailer = \Swift_Mailer::newInstance($this->getTransport());
