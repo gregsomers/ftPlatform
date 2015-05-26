@@ -205,6 +205,7 @@
 
                 vm.clients = DS.getAll('clients');
                 vm.invoice = DS.createInstance('invoices');
+                vm.currencies = DS.getAll('currencies');
 
                 //defaults
                 var nextId = $global.getAppSetting('invoice_next_id').value++;

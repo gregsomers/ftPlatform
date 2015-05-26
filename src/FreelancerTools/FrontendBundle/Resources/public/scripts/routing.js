@@ -93,6 +93,9 @@
                         },
                         projects: function (DS) {
                             return DS.findAll('projects');
+                        },
+                        currencies: function (DS) {
+                            return DS.findAll('currencies');
                         }
                     }
                 });
