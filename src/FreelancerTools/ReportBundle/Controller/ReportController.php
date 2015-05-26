@@ -97,15 +97,20 @@ class ReportController extends Controller {
     public function guestShowInvoiceAction($token) {
         
         $invoice = $this->getInvoiceRepository()->findOneByToken($token);
+        $itemIds = array();
+        foreach($invoice->getItems() as $item) {
+            $itemIds[] = $item->getId();
+        }
         
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
         $qb
                 ->select('a,s')
                 ->from('FreelancerToolsTimeTrackerBundle:Activity', 'a')
                 ->leftJoin('a.timeslices', 's')
-                ->andWhere('s.invoice = :invoice')
+                ->andWhere('s.invoice = :invoice OR s.invoiceItem IN(:itemIds)')
                 ->setParameters(array(
-                    ':invoice' => $invoice->getId()
+                    ':invoice' => $invoice->getId(),
+                    ':itemIds' => array_values($itemIds)
                 ))
         ;
 

@@ -17,8 +17,8 @@ use FreelancerTools\CoreBundle\Entity\Entity;
  * @ORM\HasLifecycleCallbacks()
  * @JMS\ExclusionPolicy("all")
  */
-class Timeslice extends Entity
-{
+class Timeslice extends Entity {
+
     /**
      * @var Activity $activity
      *
@@ -28,7 +28,6 @@ class Timeslice extends Entity
      * //@JMS\Expose()
      */
     protected $activity;
-
 
     /**
      * @var integer $duration (in seconds)
@@ -59,95 +58,91 @@ class Timeslice extends Entity
      * //@JMS\Type("DateTime<'m/d/Y h:m:s a'>")
      */
     protected $stoppedAt;
-    
-    /**    
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      * @JMS\Expose()
      */
     protected $notes;
-    
-    /**    
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @JMS\Expose()
      */
     protected $status;
-    
-    /**     
+
+    /**
      * @ORM\Column(name="invoiced", type="boolean", options={"default" = 0})
      * @JMS\Expose()
      */
     protected $invoiced = false;
-    
-    /**     
+
+    /**
      * 
      * @ORM\ManyToOne(targetEntity="FreelancerTools\InvoicingBundle\Entity\Invoice", inversedBy="timeslices", cascade="persist")
      * @ORM\JoinColumn(name="invoice_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     protected $invoice;
-    
-    /**     
+
+    /**
      * 
      * @ORM\ManyToOne(targetEntity="FreelancerTools\InvoicingBundle\Entity\InvoiceItem", inversedBy="timeslices", cascade="persist")
      * @ORM\JoinColumn(name="invoiceItem_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     protected $invoiceItem;
-    
-    /**     
+
+    /**
      * @Assert\DateTime()     
      * @ORM\Column(name="invoiced_at", type="datetime", nullable=true)
      */
     protected $invoicedAt;
 
-
     /**
      * Entity constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->tags = new ArrayCollection();
     }
-    
+
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("active")
      * 
      */
     public function getAPIActive() {
-        return !$this->getActivity()->getArchived();        
+        return !$this->getActivity()->getArchived();
     }
-    
+
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("activity_id")
      * 
      */
-    public function getActivityId() {   
+    public function getActivityId() {
         return $this->getActivity()->getId();
     }
-    
+
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("invoiceItem_id")
      * 
      */
-    public function getInvoiceItemId() { 
-        if($this->getInvoiceItem()) {
+    public function getInvoiceItemId() {
+        if ($this->getInvoiceItem()) {
             return $this->getInvoiceItem()->getId();
         }
     }
-    
+
     /**
      * @JMS\VirtualProperty
      * @JMS\SerializedName("project_id")
      * 
      */
-    public function getProjectId() {  
-        if($this->getActivity()->getProject()) {
+    public function getProjectId() {
+        if ($this->getActivity()->getProject()) {
             return $this->getActivity()->getProject()->getId();
         }
     }
-    
-    
 
     /**
      * Set activity
@@ -155,8 +150,7 @@ class Timeslice extends Entity
      * @param  Activity  $activity
      * @return Timeslice
      */
-    public function setActivity(Activity $activity)
-    {
+    public function setActivity(Activity $activity) {
         $this->activity = $activity;
 
         return $this;
@@ -167,8 +161,7 @@ class Timeslice extends Entity
      *
      * @return Activity
      */
-    public function getActivity()
-    {
+    public function getActivity() {
         return $this->activity;
     }
 
@@ -178,8 +171,7 @@ class Timeslice extends Entity
      * @param  integer   $duration
      * @return Timeslice
      */
-    public function setDuration($duration)
-    {
+    public function setDuration($duration) {
         $this->duration = $duration;
 
         return $this;
@@ -190,8 +182,7 @@ class Timeslice extends Entity
      *
      * @return int
      */
-    public function getDuration()
-    {
+    public function getDuration() {
         return $this->duration;
     }
 
@@ -201,8 +192,7 @@ class Timeslice extends Entity
      * @param  DateTime  $startedAt
      * @return Timeslice
      */
-    public function setStartedAt($startedAt)
-    {
+    public function setStartedAt($startedAt) {
         if (!$startedAt instanceof DateTime && !empty($startedAt)) {
             $startedAt = new DateTime($startedAt);
         }
@@ -216,8 +206,7 @@ class Timeslice extends Entity
      *
      * @return DateTime
      */
-    public function getStartedAt()
-    {
+    public function getStartedAt() {
         return $this->startedAt;
     }
 
@@ -227,8 +216,7 @@ class Timeslice extends Entity
      * @param  DateTime  $stoppedAt
      * @return Timeslice
      */
-    public function setStoppedAt($stoppedAt)
-    {
+    public function setStoppedAt($stoppedAt) {
         if (!$stoppedAt instanceof DateTime && !empty($stoppedAt)) {
             $stoppedAt = new DateTime($stoppedAt);
         }
@@ -242,51 +230,46 @@ class Timeslice extends Entity
      *
      * @return DateTime
      */
-    public function getStoppedAt()
-    {
-        
+    public function getStoppedAt() {
+
         return $this->stoppedAt;
     }
-    
-    public function setNotes($notes)
-    {
+
+    public function setNotes($notes) {
         $this->notes = $notes;
 
         return $this;
-    }   
-      
-    public function getNotes()
-    {
+    }
+
+    public function getNotes() {
         return $this->notes;
     }
-    
-    public function getStatus()
-    {
+
+    public function getStatus() {
         return $this->status;
     }
-    
-    public function setStatus($status)
-    {
+
+    public function setStatus($status) {
         $this->status = $status;
 
         return $this;
     }
-    
-    public function setInvoiced($invoiced)
-    {
+
+    public function setInvoiced($invoiced) {
         $this->invoiced = $invoiced;
 
         return $this;
     }
-    
-    public function getInvoiced()
-    {
-        return $this->invoiced;
+
+    public function getInvoiced() {
+        if ($this->invoiced || $this->getInvoiceItem()) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    
-    
-    public function setInvoicedAt($invoicedAt)
-    {
+
+    public function setInvoicedAt($invoicedAt) {
         if (!$invoicedAt instanceof DateTime && !empty($invoicedAt)) {
             $invoicedAt = new DateTime($invoicedAt);
         }
@@ -294,10 +277,9 @@ class Timeslice extends Entity
 
         return $this;
     }
-   
-    public function getInvoicedAt()
-    {
-        
+
+    public function getInvoicedAt() {
+
         return $this->invoicedAt;
     }
 
@@ -308,8 +290,7 @@ class Timeslice extends Entity
      * @ORM\PreUpdate
      * @return Timeslice
      */
-    public function updateDuration()
-    {
+    public function updateDuration() {
         if (!empty($this->startedAt) && !empty($this->stoppedAt)) {
             $this->duration = abs($this->stoppedAt->getTimestamp() - $this->startedAt->getTimestamp());
         }
@@ -322,8 +303,7 @@ class Timeslice extends Entity
      *
      * @return int
      */
-    public function getCurrentDuration()
-    {
+    public function getCurrentDuration() {
         if ($this->getDuration()) {
             return $this->getDuration();
         }
@@ -337,22 +317,19 @@ class Timeslice extends Entity
 
             $duration = $this->getStartedAt()->diff($end);
 
-            return $duration->format('%a') * 24 * 60 * 60
-                + $duration->format('%h') * 60 * 60
-                + $duration->format('%i') * 60
-                + $duration->format('%s');
+            return $duration->format('%a') * 24 * 60 * 60 + $duration->format('%h') * 60 * 60 + $duration->format('%i') * 60 + $duration->format('%s');
         }
     }
-    
+
     public function getCurrentDurationString() {
-        
+
         $total = $this->getCurrentDuration();
-        
+
         $hours = floor($total / 3600);
         $mins = floor(($total - ($hours * 3600)) / 60);
         $secs = floor($total % 60);
-        return sprintf("%02d", $hours).":".sprintf("%02d", $mins).":".sprintf("%02d", $secs);
-    }    
+        return sprintf("%02d", $hours) . ":" . sprintf("%02d", $mins) . ":" . sprintf("%02d", $secs);
+    }
 
     /**
      * Set invoice
@@ -360,8 +337,7 @@ class Timeslice extends Entity
      * @param \FreelancerTools\InvoicingBundle\Entity\Invoice $invoice
      * @return Timeslice
      */
-    public function setInvoice(\FreelancerTools\InvoicingBundle\Entity\Invoice $invoice = null)
-    {
+    public function setInvoice(\FreelancerTools\InvoicingBundle\Entity\Invoice $invoice = null) {
         $this->invoice = $invoice;
 
         return $this;
@@ -372,20 +348,18 @@ class Timeslice extends Entity
      *
      * @return \FreelancerTools\InvoicingBundle\Entity\Invoice 
      */
-    public function getInvoice()
-    {
+    public function getInvoice() {
         return $this->invoice;
     }
-    
-    public function setInvoiceItem(\FreelancerTools\InvoicingBundle\Entity\InvoiceItem $invoiceItem = null)
-    {
+
+    public function setInvoiceItem(\FreelancerTools\InvoicingBundle\Entity\InvoiceItem $invoiceItem = null) {
         $this->invoiceItem = $invoiceItem;
 
         return $this;
     }
-    
-    public function getInvoiceItem()
-    {
+
+    public function getInvoiceItem() {
         return $this->invoiceItem;
     }
+
 }
