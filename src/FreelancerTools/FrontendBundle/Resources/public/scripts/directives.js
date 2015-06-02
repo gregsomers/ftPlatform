@@ -3,6 +3,23 @@
 
     angular.module('ftApp')
 
+            .directive('ftCurrencyInt', function () {
+                return {
+                    require: 'ngModel',
+                    link: function (scope, element, attrs, ngModelController) {
+                        ngModelController.$parsers.push(function (data) {
+                            //convert data from view format to model format
+                            return data * 100; //converted
+                        });
+
+                        ngModelController.$formatters.push(function (data) {
+                            //convert data from model format to view format
+                            return data / 100; //converted
+                        });
+                    }
+                }
+            })
+
             .directive('ngReallyClick', function ($modal, assetDir) {
                 return {
                     scope: {
@@ -121,7 +138,7 @@
                     link: function (scope, element, attrs, ngModel) {
 
                         var update = function () {
-                            if (!ngModel.$viewValue || ngModel.$viewValue.stoppedAt) {                                
+                            if (!ngModel.$viewValue || ngModel.$viewValue.stoppedAt) {
                                 return;
                             }
                             var startDate = moment(ngModel.$viewValue.startedAt);
@@ -130,7 +147,7 @@
                         };
 
                         ngModel.$render = function () {
-                            if (ngModel.$viewValue) {                                
+                            if (ngModel.$viewValue) {
                                 update();
                             }
                         };

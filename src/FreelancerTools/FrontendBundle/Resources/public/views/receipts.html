@@ -1,0 +1,39 @@
+<div class="box">
+    <div class="title">
+        <div class="clearfix">
+            <div class="pull-left">
+                Receipts 
+            </div>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <div class="btn btn-default" ngf-select ngf-change="upload($files)" ngf-accept="'image/*'" accept="image/*" ngf-capture="'camera'">Upload a receipt</div>
+                </div>
+            </div>   
+        </div>        
+    </div>
+    <div class="content clearfix no-more-tables">
+        <table class="table table-hover">
+            <thead>
+            <th>Date</th>
+            <th>Merchant</th>
+            <th>Total</th>
+            <th>&nbsp;</th>
+            </thead>
+            <tbody>
+                <tr ng-click="edit(receipt)" ng-repeat="receipt in receipts">
+                    <td data-title="Date">{{receipt.date|myDateFormat}}&nbsp;</td>  
+                    <td data-title="Merchant">{{receipt.merchant}}&nbsp;</td>  
+                    <td data-title="Total">{{(receipt.total / 100) | currency:"$"}}&nbsp;</td>
+                    <td data-title="&nbsp;">
+                        <div class="btn-group">
+                            <button ng-really-type="delete" ng-really-click="remove(receipt)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

@@ -93,6 +93,9 @@
                 <li ng-class="{ current: vm.isActive('/timesheet')}" id="nav-timesheet">        
                     <a href="#/timesheet"><span class="fa fa-clock-o"></span> <span class="hidden-xs">Timesheet</span></a>
                 </li>
+                <li ng-class="{ current: vm.isActive('/receipts')}" id="nav-timesheet">        
+                    <a href="#/receipts"><span class="fa fa-archive"></span> <span class="hidden-xs">Receipts</span></a>
+                </li>
                 <li class="last">        
                     <a href="#/report"><span class="fa fa-bar-chart"></span> <span class="hidden-xs">Reports</span></a>        
                 </li>
@@ -127,139 +130,9 @@
                 </div>
             </div>
         </section>
-
-
-
-
     </div>
 
-    {#
-
-    <div class="wrap">  
-
-
-        <div class="navbar-static-side">
-            <sidebar ng-controller="NavMenuCtrl as vm">
-                <ul class="nav">
-                    <li id="nav-dashboard" class="first">       
-                        <a href="/"><i class="fa fa-tachometer"></i> Dashboard</a>        
-                    </li>
-                    <li ng-class="{ current: vm.isActive('/clients')}">        
-                        <a href="#/clients"><i class="fa fa-user"></i> Clients</a>        
-                    </li>
-                    <li ng-class="{ current: vm.isActive('/invoices')}">        
-                        <a href="#/invoices"><i class="fa fa-file-text-o"></i> Invoices</a>                
-                        <ul class="menu_level_1">
-                            <li class="hide first last">        
-                                <a href="/invoices/add">Add</a>        
-                            </li>
-                        </ul>
-                    </li>
-                    <li>        
-                        <a href="/payments"><i class="fa fa-usd"></i> Payments</a>        
-                    </li>
-                    <li ng-class="{ current: vm.isActive('/timesheet')}" id="nav-timesheet">        
-                        <a href="#/timesheet"><i class="fa fa-clock-o"></i> Timesheet</a>                
-                        <ul class="menu_level_1">
-                            <li class="hide first">        
-                                <a href="/activities/add">Activity Add</a>        
-                            </li>
-                            <li class="hide last">        
-                                <a href="/projects/add">Project Add</a>        
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="last">        
-                        <a href="/report"><i class="fa fa-bar-chart"></i> Reports</a>        
-                    </li>
-                </ul>
-                {% verbatim %}
-                    <div class="ft-activeTimesliceCounter" ng-controller="ActiveTimesliceCounterCtrl as vm"> 
-                        {{vm.global.getActiveSlice().startedAt}}    
-                        00:00:00
-                    </div>
-                {% endverbatim %}
-                <!--    
-                                <br/><br/><br/>
-                
-                {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu', {'allow_safe_labels': true }) }}-->
-            </sidebar>
-        </div>
-
-        <div class="page-wrapper" style="margin: 0 0 0 220px;">
-
-            <nav class="navbar navbar-default" role="navigation">
-                <div class="container-fluid">
-                    <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="{{path('dashboard')}}">Freelancer Tools</a>
-                    </div>
-
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">                    
-                        {% if app.user %}
-                            <ul class="nav navbar-nav navbar-right">
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="System">
-                                        <i class="glyphicon glyphicon-cog"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="{{path('fos_user_profile_edit')}}">User Account</a></li>
-                                        <li><a href="{{path('fos_user_change_password')}}">Change Password</a></li>
-                                        <li><a href="{{path('email_templates')}}">Manage Email Templates</a></li>  
-                                        <li><a href="{{path('currency')}}">Manage Currencies</a></li>   
-                                        <li><a href="{{path('paymentmethod')}}">Manage Payment Methods</a></li>   
-                                        <li><a href="{{path('settings')}}">System Settings</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="{{path('fos_user_security_logout')}}" title="Logout">
-                                        <span class="glyphicon glyphicon-off"></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        {% endif %}
-                    </div><!-- /.navbar-collapse -->
-                </div><!-- /.container-fluid -->
-            </nav>
-
-            <div class="container-fluid">
-                <div class="row">
-                    {% block sidebar %}   
-                        <!--<div class="col-md-1">
-                            
-                            <sidebar>
-                        {{ knp_menu_render('FreelancerToolsCoreBundle:Builder:mainMenu') }}
-                    </sidebar>
-                       
-                    </div> -->
-                    {% endblock %}   
-
-
-                    {%verbatim %}
-                        <div class="col-md-12" role="main" class="ng-cloak" ng-cloak ng-view>
-
-                        </div>    
-                    {%endverbatim %}
-
-                    {% block body %}            
-                    {% endblock %}
-
-                    {% block fos_user_content %}
-                    {% endblock fos_user_content %}
-                </div>
-            </div>
-        </div>
-    </div>
-                
-             #}      
-
+    
     <!-- -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -306,6 +179,7 @@
                             'bundles/freelancertoolsfrontend/scripts/controllers/currenciesCtrl.js'
                             'bundles/freelancertoolsfrontend/scripts/controllers/paymentMethodsCtrl.js'
                             'bundles/freelancertoolsfrontend/scripts/controllers/dashboardCtrl.js' 
+                            'bundles/freelancertoolsfrontend/scripts/controllers/receiptsCtrl.js'
                             'bundles/freelancertoolsfrontend/scripts/controllers.js'
                             'bundles/freelancertoolsfrontend/scripts/services.js'
                             'bundles/freelancertoolsfrontend/scripts/routing.js'
@@ -321,6 +195,7 @@
     <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/angular-loading-bar/build/loading-bar.min.js') }}"></script>
     <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/ngToast-1.5.2/dist/ngToast.min.js') }}"></script>
     <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/moment-duration-format-1.3.0/lib/moment-duration-format.js') }}"></script>
+    <script src="{{ asset('bundles/freelancertoolsfrontend/vendor/ng-file-upload-4.2.4/dist/ng-file-upload.min.js') }}"></script>
 
     <script src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
 

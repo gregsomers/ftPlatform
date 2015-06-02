@@ -19,7 +19,7 @@
                             <li><a target="_blank" href="/invoices/pdf/{{vm.invoice.token}}"><span class="glyphicon glyphicon-print"></span> Download PDF</a></li>
                             <li><a target="_blank" href="/report/invoice/{{vm.invoice.id}}"><span class="glyphicon glyphicon-time"></span> View Time Log</a></li>                                
                             <li><a ng-click="vm.sendCustomEmail()"><span class="glyphicon glyphicon-envelope"></span> Send Email to Customer</a></li>
-                            <li><a ng-click="vm.delete()"><span class="glyphicon glyphicon-trash"></span> Delete Invoice</a></li>
+                            <li><a ng-really-type="delete" ng-really-click="vm.delete()"><span class="glyphicon glyphicon-trash"></span> Delete Invoice</a></li>
                         </ul>
                     </div>
                 </div>
@@ -29,7 +29,6 @@
     <div class="content clearfix">
 
         <form class="form-horizontal" name="invoiceForm" novalidate > 
-
 
             <div class="row">
                 <div class="col-sm-4">
@@ -132,7 +131,9 @@
                             <td class="col-sm-1" data-title="Subtotal">{{(item.quantity * item.price) | currency:"$"}}</td>
                             <td data-title="Tax Rate">None</td>
                             <td data-title="Total">{{(item.quantity * item.price) | currency:"$"}}</td>
-                            <td data-title="&nbsp;"><button ng-click="vm.deleteInvoiceItem(item)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button></td>
+                            <td data-title="&nbsp;">
+                                <button ng-really-type="delete" ng-really-click="vm.deleteInvoiceItem(item)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                            </td>
                         </tr>             
                     </tbody>
                 </table> 

@@ -190,6 +190,17 @@
                         }
                     }
                 });
+                
+                $routeProvider.when('/receipts', {
+                    controller: 'ReceiptsListCtrl',
+                    //controllerAs: 'vm',
+                    templateUrl: assetDir + 'views/receipts.html',
+                    resolve: {
+                        settings: function(DS) {
+                            return DS.findAll('receipts');
+                        }
+                    }
+                });
 
                 $locationProvider.html5Mode(false);
 

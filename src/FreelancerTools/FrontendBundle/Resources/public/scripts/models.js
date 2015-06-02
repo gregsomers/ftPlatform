@@ -297,7 +297,10 @@ angular.module('ftApp')
                 idAttribute: 'id'
             });
             
-            
+            DS.defineResource({
+                name: 'receipts',
+                idAttribute: 'id'                
+            });
 
 
 

@@ -155,7 +155,7 @@
                         }
                     });
                     projects.forEach(function (project) {
-                        if (project.getUnbilledTime() > 0) {
+                        if (project.getUnbilledTime() > 0 && project.isActive()) {
                             vm.unbilledProjects.push(project);
                         }
                     });
@@ -276,7 +276,7 @@
                         }
                     });
                     projects.forEach(function (project) {
-                        if (project.getUnbilledTime() > 0) {
+                        if (project.getUnbilledTime() > 0 && project.isActive()) {
                             vm.unbilledProjects.push(project);
                         }
                     });

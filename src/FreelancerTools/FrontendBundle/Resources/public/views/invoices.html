@@ -51,7 +51,7 @@
                     <td data-title="&nbsp;">
                         <div class="btn-group">
                             <button ng-click="vm.edit(invoice.id); $event.stopPropagation();" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></button>
-                            <button ng-click="vm.delete(invoice); $event.stopPropagation();" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+                            <button ng-really-type="delete" ng-really-click="vm.delete(invoice)" class="btn btn-default btn-sm" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
                         </div>
                     </td>
                 </tr>

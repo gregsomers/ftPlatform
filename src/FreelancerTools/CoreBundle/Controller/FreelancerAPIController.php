@@ -111,5 +111,8 @@ class FreelancerAPIController extends Controller {
     protected function getCurrencyRepository() {
         return $this->getDoctrine()->getRepository('FreelancerToolsPaymentBundle:Currency');
     }
+    protected function getReceiptRepository() {
+        return $this->getDoctrine()->getRepository('FreelancerToolsPaymentBundle:Receipt');
+    }
 
 }
